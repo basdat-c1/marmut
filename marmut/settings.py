@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'marmut.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'marmut',
         'USER': 'postgres',
-        'PASSWORD': 'iDhwJERyQQYNFOCrmWCDFBqOGxBxzLLd',
-        'HOST': 'monorail.proxy.rlwy.net',
-        'PORT': '12208',
+        'PASSWORD': '<passwordnya>',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
