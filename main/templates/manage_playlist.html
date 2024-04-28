@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-4">User Playlist</h1> 
+
+    <!-- if user gapunya playlist -->
+        <div class="text-center mb-4">
+            <p class="fs-5 mb-0"><b>Anda Belum Memiliki Playlist</b></p>
+        </div>
+    <!-- else -->
+        <table id="tabel_lagu" class="table table-bordered text-center mb-3">
+            <thead>
+                <tr>
+                    <th colspan="4" style="background-color: hsl(195, 5%, 84%);">User Playlist</th>
+                </tr>
+                <tr>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td scope="row">Playlist1</td>
+                    <td>0</td>
+                    <td>0 menit</td>
+                    <td>
+                        <a href="detail/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Detail</button>
+                        </a>
+                        <a href="edit/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Ubah</button>
+                        </a>
+                        <a href="delete/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Hapus</button>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td scope="row">Playlist2</td>
+                    <td>2</td>
+                    <td>4 menit</td>
+                    <td>
+                        <a href="detail/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Detail</button>
+                        </a>
+                        <a href="edit/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Ubah</button>
+                        </a>
+                        <a href="delete/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Hapus</button>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td scope="row">...</td>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td scope="row" colspan="4">
+                        <a href="create/">
+                            <button type="button" class="btn btn-secondary btn-block mx-1">Tambah Playlist</button>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>        
+    <!-- end if -->
+</div>
+
+{% endblock content %}

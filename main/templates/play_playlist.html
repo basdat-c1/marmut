@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-3">User Playlist Details</h1> 
+
+    <p class="fs-5 mb-0"><b>Judul: </b>Playlist1</p>
+    <p class="fs-5 mb-0"><b>Pembuat: </b>Pembuat1</p>
+    <p class="fs-5 mb-0"><b>Jumlah Lagu: </b>12</p>
+    <p class="fs-5 mb-0"><b>Total Durasi: </b>8 jam 20 menit</p>
+    <p class="fs-5 mb-0"><b>Tanggal Dibuat: </b>18/03/24</p>
+    <p class="fs-5 mb-0"><b>Deskripsi: </b>Lorem ipsum ...</p>
+
+    <div class="text-center">
+        <div class="justify-content-center mb-3">
+            <a href="">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Shuffle Play</button>
+            </a>
+            <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button>
+        </div>
+    </div>
+
+    <table id="tabel_lagu" class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th colspan="4" style="background-color: hsl(195, 5%, 84%);">Daftar Lagu</th>
+            </tr>
+            <tr>
+                <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul Lagu</th>
+                <th scope="col" style="background-color: hsl(195, 5%, 84%);">Oleh</th>
+                <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
+                <th scope="col" style="background-color: hsl(195, 5%, 84%);">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row">Song1</td>
+                <td>Artist1</td>
+                <td>2 menit</td>
+                <td>
+                    <a href="../../song/play/">
+                        <button type="button" class="btn btn-secondary btn-block mx-1">Lihat</button>
+                    </a>
+                    <a href="../../song/play/">
+                        <button type="button" class="btn btn-secondary btn-block mx-1">Play</button>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">Song2</td>
+                <td>Artist2</td>
+                <td>3 menit</td>
+                <td>
+                    <a href="../../song/play/">
+                        <button type="button" class="btn btn-secondary btn-block mx-1">Lihat</button>
+                    </a>
+                    <a href="../../song/play/">
+                        <button type="button" class="btn btn-secondary btn-block mx-1">Play</button>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td scope="row">...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+</div>
+
+{% endblock content %}

@@ -55,7 +55,7 @@ ROOT_URLCONF = 'marmut.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'marmut',
         'USER': 'postgres',
-        'PASSWORD': '<passwordnya>',
+        'PASSWORD': 'raviehasan',
         'HOST': 'localhost',
         'PORT': '5432',
     }

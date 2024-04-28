@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-5">Add Song to User Playlist</h1> 
+
+    <div class="mb-3">
+        <div class="d-flex justify-content-center mb-3">
+            <form method="POST" action="../add-to-playlist-success/">
+                {% csrf_token %}
+                <table class="mb-3">
+                    <tr>
+                        <td><p class="fs-5 mb-1" style="width: 80px;"><b>&nbsp&nbsp&nbspJudul: </b></td>
+                        <td>Song1</td>
+                    </tr>
+                        <td><p class="fs-5 mb-1" style="width: 80px;"><b>&nbsp&nbsp&nbspArtist: </b></td>
+                        <td>Artist1</td>
+                    <tr>
+                    </tr>
+                    <tr>
+                        <td style="width: 80px;">
+                            <p class="fs-5 mb-0"><b>Playlist: </b></p>
+                        </td>
+                        <td>
+                            <select id="playlist-dropdown" class="form-select form-select-sm" style="min-width: max-content;">
+                                <option value="playlist1">Playlist1</option>
+                                <option value="playlist2">Playlist2</option>
+                                <option value="playlist3">Playlist3</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text-center">
+                    <input class="btn btn-secondary btn-block mx-1" type="submit" value="Tambah" style="width: 100px;">
+                    <a href="../play/">
+                        <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
+                    </a>
+                    <!-- <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button> -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

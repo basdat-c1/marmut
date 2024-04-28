@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-4">Download Song Success!</h1> 
+
+    <div class="text-center mb-4">
+        <p class="fs-5 mb-0"><b>Berhasil mengunduh Lagu dengan judul ‘Song1’!</b></p>
+    </div>
+
+    <div class="text-center">
+        <div class="justify-content-center mb-3">
+            <a href="">
+                <!-- pergi ke daftar lagu yang sudah di download -->
+                <button type="button" class="btn btn-secondary btn-block mx-1">Ke Daftar Download</button>
+            </a>
+            <a href="../play">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
+            </a>
+            <!-- <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button> -->
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center">Welcome to Marmut!</h1> 
+
+    <br>
+
+    <p class="fs-5 mb-1"><b>Nama: </b>tes</p>
+    <p class="fs-5 mb-1"><b>Email: </b>tes</p>
+    <!-- if user is label -->
+        <p class="fs-5 mb-1"><b>Kontak: </b>tes</p>
+    <!-- else -->
+        <p class="fs-5 mb-1"><b>Kota asal: </b>tes</p>
+        <p class="fs-5 mb-1"><b>Gender: </b>tes</p>
+        <p class="fs-5 mb-1"><b>Tempat lahir: </b>tes</p>
+        <p class="fs-5 mb-1"><b>Tanggal lahir: </b>tes</p>
+        <p class="fs-5 mb-1"><b>Role(s): </b>tes1, tes2, tes3</p>
+    <!-- end if -->
+
+    <br>
+
+    <!-- if user is label -->
+        <p class="fs-5 mb-0"><b>Daftar Album:</b></p>
+        <table id="tabel_album" class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td scope="row">1</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                </tr>
+                <tr>
+                    <td scope="row">2</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                </tr>
+                <tr>
+                    <td scope="row">3</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                    <td>tes</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <br>
+    
+    <!-- else -->
+        <!-- if user is pengguna biasa -->
+            <p class="fs-5 mb-0"><b>Daftar Playlist:</b></p>
+            <table id="tabel_playlist" class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">User</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Deskripsi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row">1</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">2</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                    </tr>
+                    <tr>
+                        <td scope="row">3</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                        <td>tes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+        <!-- else -->
+            <!-- if user is songwriter or user is artist -->
+                <p class="fs-5 mb-0"><b>Daftar Lagu:</b></p>
+                <table id="tabel_lagu" class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Artis</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Album</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Play</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row">1</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">2</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">3</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br>
+            <!-- end if -->
+
+            <!-- if user is podcaster -->
+                <p class="fs-5 mb-0"><b>Daftar Podcast:</b></p>
+                <table id="tabel_podcast" class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Podcaster</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row">1</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">2</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">3</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                            <td>tes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br>
+            <!-- end if -->
+        <!-- end if -->
+     <!-- end if -->
+
+</div>
+
+{% endblock content %}

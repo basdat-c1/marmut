@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-5">Tambah Lagu</h1> 
+
+    <div class="d-flex justify-content-center mb-3">
+        <form method="POST" action="../">
+            {% csrf_token %}
+            <table class="mb-3">
+                <tr>
+                    <td style="width: 60px;">
+                        <p class="fs-5 mb-0"><b>Lagu: </b></p>
+                    </td>
+                    <td>
+                        <select id="playlist-dropdown" class="form-select form-select-sm" style="min-width: max-content; margin-left: 5px;">
+                            <option value="playlist1">Lagu1 - Artis1</option>
+                            <option value="playlist2">Lagu2 - Artis2</option>
+                            <option value="playlist3">Lagu3 - Artis3</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div class="text-center">
+                <input class="btn btn-secondary" type="submit" value="Submit" style="width: 100px;">
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

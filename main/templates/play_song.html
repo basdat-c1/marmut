@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-3">Song Details</h1> 
+
+    <p class="fs-5 mb-0"><b>Judul: </b>Song1</p>
+    <p class="fs-5 mb-0"><b>Genre(s):</b></p>
+    <ul class="mb-0">
+        <li class="fs-5 mb-0">Genre 1</li>
+        <li class="fs-5 mb-0">Genre 2</li>
+    </ul>
+    <p class="fs-5 mb-0"><b>Artist: </b>Artist1</p>
+    <p class="fs-5 mb-0"><b>Songwriter(s):</b></p>
+    <ul class="mb-0">
+        <li class="fs-5 mb-0">Songwriter1</li>
+        <li class="fs-5 mb-0">Songwriter2</li>
+    </ul>
+    <p class="fs-5 mb-0"><b>Durasi: </b>3 menit</p>
+    <p class="fs-5 mb-0"><b>Tanggal Rilis: </b>18/03/24</p>
+    <p class="fs-5 mb-0"><b>Tahun: </b>2024</p>
+    <p class="fs-5 mb-0"><b>Total Play: </b>0</p>
+    <p class="fs-5 mb-0"><b>Total Downloads: </b>0</p>
+    <p class="fs-5 mb-0"><b>Album: </b>Album1</p>
+
+    <div class="container mb-3">
+        <div class="row justify-content-center">
+            <div class="col-md-11 text-center">
+                <input type="range" style="width: 100%; height: 50px; margin: 0 auto;" id="customRange1" value="0">
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div class="justify-content-center mb-3">
+            <button type="button" class="btn btn-secondary btn-block mx-1">Play</button>
+            <a href="../add-to-playlist/">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Add to Playlist</button>
+            </a>
+            <a href="../download/">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Download</button>
+            </a>
+            <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
