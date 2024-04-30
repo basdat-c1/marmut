@@ -16,4 +16,9 @@ urlpatterns = [
     path('playlist/detail/', playlist_detail, name='playlist_detail'),
     path('playlist/detail/delete-song/', playlist_delete_song, name='playlist_delete_song'),
     path('playlist/detail/add-song/', playlist_add_song, name='playlist_add_song'),
+    path('login/', login_page, name='login'),
+    path('login-or-register/', login_register_page, name='login_register'),
+    path('podcast/play', play_podcast, name='play_podcast'),
+    path('chart/', chart_list, name="chart_list"),
+    path('chart/detail/', chart_detail, name="chart_detail"),
 ]

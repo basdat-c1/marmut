@@ -15,10 +15,12 @@
                 margin: 25px;
             }
         </style>
-
     </head>
 
     <body>
+        <header>
+            {% include 'navbar.html' %}
+        </header>
         {% block content %}
         {% endblock content %}
         
