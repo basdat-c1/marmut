@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Add New Episode{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Tambah Episode {{ podcast.judul }}</h2>
+    
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Podcast Title: {{ podcast.judul }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Total Episodes: {{ podcast.jumlah_episode }}</h6>
+            <p class="card-text">Total Duration: {{ podcast.total_durasi }}</p>
+        </div>
+    </div>
+
+    <form>
+        <div class="mb-3">
+            <label for="judul" class="form-label">Judul Episode</label>
+            <input type="text" class="form-control" id="judul" name="judul" required>
+        </div>
+        <div class="mb-3">
+            <label for="deskripsi" class="form-label">Deskripsi</label>
+            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="durasi" class="form-label">Durasi (Dalam menit)</label>
+            <input type="text" class="form-control" id="durasi" name="durasi" required>
+        </div>
+        <button type="submit" class="btn btn-secondary">Submit</button>
+    </form>
+</div>
+{% endblock %}

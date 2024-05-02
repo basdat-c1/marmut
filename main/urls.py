@@ -21,4 +21,8 @@ urlpatterns = [
     path('podcast/play', play_podcast, name='play_podcast'),
     path('chart/', chart_list, name="chart_list"),
     path('chart/detail/', chart_detail, name="chart_detail"),
+    path('podcast/manage/', manage_podcasts, name="manage_podcast"),
+    path('podcast/create/', create_podcast, name="create_podcast"),
+    path('podcast/manage/episode/', episode_list, name="episode_list"),
+    path('podcast/manage/episode/create/<podcast_id>', create_episode, name="create_episode")
 ]

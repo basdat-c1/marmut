@@ -5,35 +5,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="">Dashboard</a>
-        </li>
+        
         {% if user.is_authenticated %}
-          {% if user.is_premium %}
-          <li class="nav-item">
-            <a class="nav-link" href="">Downloaded Songs</a>
+          <li class="nav-item active">
+            <a class="nav-link" href="">Dashboard</a>
           </li>
-          {% endif %}
-          {% if user.is_podcaster %}
-            <li class="nav-item">
-              <a class="nav-link" href="">Kelola Podcast</a>
-            </li>
-          {% endif %}
-          {% if user.is_artist or user.is_songwriter %}
-            <li class="nav-item">
-              <a class="nav-link" href="">Kelola Album & Songs</a>
-            </li>
-          {% endif %}
           {% if user.is_label %}
             <li class="nav-item">
               <a class="nav-link" href="">Kelola Album</a>
             </li>
-          {% endif %}
-          {% if user.is_artist or user.is_songwriter or user.is_label %}
             <li class="nav-item">
               <a class="nav-link" href="">Cek Royalti</a>
             </li>
-          {% endif %}
+          {% else %}
           <li class="nav-item">
             <a class="nav-link" href="">Chart</a>
           </li>
@@ -42,17 +26,37 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="">Langganan Paket</a>
-          </li>
+            {% if user.is_premium %}
+            <li class="nav-item">
+              <a class="nav-link" href="">Downloaded Songs</a>
+            </li>
+            {% endif %}
+            {% if user.is_podcaster %}
+              <li class="nav-item">
+                <a class="nav-link" href="">Kelola Podcast</a>
+              </li>
+            {% endif %}
+            {% if user.is_artist or user.is_songwriter %}
+              <li class="nav-item">
+                <a class="nav-link" href="">Kelola Album & Songs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="">Cek Royalti</a>
+              </li>
+            {% endif %}
+          {% endif %}
           <li class="nav-item">
-            <a class="nav-link" href="">Logout</a>
+            <a class="nav-link" href="">Log out</a>
           </li>
         {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="">Sign Up</a>
-          </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">Sign Up</a>
+        </li>
+          
         {% endif %}
       </ul>
     </div>

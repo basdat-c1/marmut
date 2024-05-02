@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Podcasts{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Podcast List</h2>
+    <a class="btn btn-secondary" href="{% url 'main:create_podcast' %}">Create Podcast</a>
+    <table class="table my-3">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Judul</th>
+                <th scope="col">Jumlah Episode</th>
+                <th scope="col">Total Durasi</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for podcast in podcasts %}
+            <tr>
+                <td>{{ podcast.judul }}</td>
+                <td>{{ podcast.jumlah_episode }}</td>
+                <td>{{ podcast.total_durasi }}</td>
+                <td>
+                    <a href="#" class="btn btn-dark">Lihat Episode</a>
+                    <a href="#" class="btn btn-secondary">Tambah Episode</a>
+                    <a href="#" class="btn btn-danger">Hapus</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No podcasts available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

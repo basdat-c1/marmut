@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Podcast{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Create New Podcast</h2>
+    <form>
+        <div class="mb-3">
+            <label for="judul" class="form-label">Judul</label>
+            <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan judul podcast">
+        </div>
+        <div class="mb-3">
+            <label for="genre" class="form-label">Genre</label>
+            <select multiple class="form-control" id="genre" name="genre">
+                <option value="philosophy">Philosophy</option>
+                <option value="history">History</option>
+                <option value="technology">Technology</option>
+                <option value="science">Science</option>
+            </select>
+            <small class="form-text text-muted">Tahan tombol Ctrl (Windows) atau Command (Mac) untuk memilih lebih dari 1 genre.</small>
+        </div>
+        <div class="mb-3">
+            <label for="duration" class="form-label">Durasi</label>
+            <input type="text" class="form-control" id="duration" name="duration" placeholder="Masukkan durasi (contoh, 1:30:00)">
+        </div>
+        <button type="submit" class="btn btn-secondary">Submit</button>
+    </form>
+</div>
+{% endblock %}
