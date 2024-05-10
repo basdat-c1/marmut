@@ -14,53 +14,41 @@
         <p class="fs-5 mb-1"><b>Email: </b>namborinambo@gmail.com</p>
         <p class="fs-5 mb-1"><b>Kontak: </b>081426381923</p>
     <!-- else -->
-        <p class="fs-5 mb-1"><b>Nama: </b>Budi Budi</p>
+        <!-- <p class="fs-5 mb-1"><b>Nama: </b>Budi Budi</p>
         <p class="fs-5 mb-1"><b>Email: </b>budibudi@gmail.com</p>
         <p class="fs-5 mb-1"><b>Kota asal: </b>Nambo</p>
         <p class="fs-5 mb-1"><b>Gender: </b>Laki-laki</p>
         <p class="fs-5 mb-1"><b>Tempat lahir: </b>Nambo</p>
         <p class="fs-5 mb-1"><b>Tanggal lahir: </b>1 Januari 2004</p>
-        <p class="fs-5 mb-1"><b>Role(s): </b>Artist/Songwriter, Podcaster</p>
+        <p class="fs-5 mb-1"><b>Role(s): </b>Artist/Songwriter, Podcaster</p> -->
     <!-- end if -->
 
     <br>
 
     <!-- if user is label -->
 
-
+        
         <p class="fs-5 mb-0"><b>Daftar Album:</b></p>
         <table id="tabel_album" class="table table-bordered text-center">
             <thead>
                 <tr>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Label</th>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
                 </tr>
             </thead>
             <tbody>
+                {% for album in data_album %}
                 <tr>
-                    <td scope="row">1</td>
-                    <td>The Tortured Poets Department</td>
-                    <td>31</td>
-                    <td>24 jam 7 menit</td>
-                    <td>1 Januari 2023</td>
+                    <td scope="row">{{forloop.counter}}</td>
+                    <td>{{album.judul}}</td>
+                    <td>{{album.nama_label}}</td>
+                    <td>{{album.jumlah_lagu}}</td>
+                    <td>{{album.total_durasi}}</td>
                 </tr>
-                <tr>
-                    <td scope="row">2</td>
-                    <td>folklore (deluxe version)</td>
-                    <td>17</td>
-                    <td>1 jam 7 menit</td>
-                    <td>1 Januari 2022</td>
-                </tr>
-                <tr>
-                    <td scope="row">3</td>
-                    <td>evermore (deluxe version)</td>
-                    <td>17</td>
-                    <td>1 jam 17 menit</td>
-                    <td>1 Januari 2021</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
         
@@ -94,24 +82,6 @@
                         <td>1 Januari 2022</td>
                         <td>Song from disney movies</td>
                     </tr>
-                    <tr>
-                        <td scope="row">2</td>
-                        <td>all too well</td>
-                        <td>Budi Budi</td>
-                        <td>79</td>
-                        <td>10 jam 10 menit</td>
-                        <td>1 Januari 2023</td>
-                        <td>I remember it all too<td>
-                    </tr>
-                    <tr>
-                        <td scope="row">3</td>
-                        <td>Inner Child</td>
-                        <td>Budi Budi</td>
-                        <td>50</td>
-                        <td>8 jam 9 menit</td>
-                        <td>1 Januari 2024</td>
-                        <td>Awakening my inner child</td>
-                    </tr>
                 </tbody>
             </table>
 
@@ -128,35 +98,29 @@
                         <tr>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Genre(s)</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Artis</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Album</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Songwriter(s)</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Play</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Download</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for lagu in data_lagu %}
                         <tr>
-                            <td scope="row">1</td>
-                            <td>All Too Well</td>
-                            <td>Taylor Swift</td>
-                            <td>Red</td>
-                            <td>1 Januari 2020</td>
-                            <td>10 menit 13 detik</td>
-                            <td>100</td>
-                            <td>50</td>
+                            <td scope="row">{{forloop.counter}}</td>
+                            <td>{{lagu.judul}}</td>
+                            <td>{{lagu.genre}}</td>
+                            <td>{{lagu.artist}}</td>
+                            <td>{{lagu.songwriter}}</td>
+                            <td>{{lagu.durasi}}</td>
+                            <td>{{lagu.tanggal_rilis}}</td>
+                            <td>{{lagu.total_play}}</td>
+                            <td>{{lagu.total_download}}</td>
                         </tr>
-                        <tr>
-                            <td scope="row">2</td>
-                            <td>gold rush</td>
-                            <td>Taylor Swift</td>
-                            <td>evermore</td>
-                            <td>1 Januari 2019</td>
-                            <td>3 menit 0 detik</td>
-                            <td>99</td>
-                            <td>30</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
 
@@ -185,13 +149,6 @@
                             <td>Malam Minggu</td>
                             <td>1 Januari 2023</td>
                             <td>50 menit</td>
-                            <td>Budi Budi</td>
-                        </tr>
-                        <tr>
-                            <td scope="row">2</td>
-                            <td>Lucky Charm</td>
-                            <td>1 Januari 2024</td>
-                            <td>45 menit</td>
                             <td>Budi Budi</td>
                         </tr>
                     </tbody>
