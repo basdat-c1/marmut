@@ -90,8 +90,15 @@ def pengguna_form(request):
         email = request.POST.get('email')
         email_query = f"SELECT * FROM AKUN WHERE email = '{email}'"
         email_result = query(email_query)
+        # cek email di akun
         if email_result:
-            messages.error(request, 'Email is already associated with a user account.')
+            messages.error(request, 'Email is already associated with another user account.')
+            return redirect('/pengguna_form')
+        # cek email di label
+        email_query_label = f"SELECT * FROM LABEL WHERE email = '{email}'"
+        email_result_label = query(email_query_label)
+        if email_result_label:
+            messages.error(request, 'Email is already associated with a label account.')
             return redirect('/pengguna_form')
         password = request.POST.get('password')
         nama = request.POST.get('nama')
@@ -125,9 +132,13 @@ def label_form(request):
         email = request.POST.get('email')
         email_query = f"SELECT * FROM LABEL WHERE email = '{email}'"
         email_result = query(email_query)
-        print(email_result)
         if email_result:
-            messages.error(request, 'Email is already associated with a label account.')
+            messages.error(request, 'Email is already associated with another label account.')
+            return redirect('/label_form')
+        email_query_akun = f"SELECT * FROM AKUN WHERE email = '{email}'"
+        email_result_akun = query(email_query_akun)
+        if email_result_akun:
+            messages.error(request, 'Email is already associated with a user account.')
             return redirect('/label_form')
         uuid = generate_unique_uuid()
         password = request.POST.get('password')
