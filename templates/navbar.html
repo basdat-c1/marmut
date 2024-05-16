@@ -6,11 +6,11 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         
-        {% if user.is_authenticated %}
+        {% if request.session.email %}
           <li class="nav-item active">
             <a class="nav-link" href="">Dashboard</a>
           </li>
-          {% if user.is_label %}
+          {% if request.session.is_label %}
             <li class="nav-item">
               <a class="nav-link" href="">Kelola Album</a>
             </li>
@@ -26,17 +26,17 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="">Langganan Paket</a>
-            {% if user.is_premium %}
+            {% if request.session.is_premium %}
             <li class="nav-item">
               <a class="nav-link" href="">Downloaded Songs</a>
             </li>
             {% endif %}
-            {% if user.is_podcaster %}
+            {% if request.session.is_podcaster %}
               <li class="nav-item">
                 <a class="nav-link" href="">Kelola Podcast</a>
               </li>
             {% endif %}
-            {% if user.is_artist or user.is_songwriter %}
+            {% if request.session.is_artist or request.session.is_songwriter %}
               <li class="nav-item">
                 <a class="nav-link" href="">Kelola Album & Songs</a>
               </li>
@@ -46,8 +46,12 @@
             {% endif %}
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link" href="">Log out</a>
+            <a class="nav-link" href="{% url 'main:logout' %}">Log out</a>
           </li>
+          <form class="d-flex pe-lg-3" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-light" type="submit">Search</button>
+          </form>
         {% else %}
 
         <li class="nav-item">
@@ -60,8 +64,4 @@
         {% endif %}
       </ul>
     </div>
-    <form class="d-flex pe-lg-3" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-light" type="submit">Search</button>
-    </form>
   </nav>
