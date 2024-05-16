@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Form Registrasi</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px; 
+            margin: 20px auto;
+        }
+        form {
+            width: 100%; 
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        select,
+        input[type="checkbox"],
+        input[type="date"],
+        input[type="submit"] {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .checkbox-label input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: 1px solid #ccc;
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .checkbox-label input[type="checkbox"]:checked {
+            background-color: #909090;
+        }
+        .checkbox-label input[type="checkbox"]:checked::after {
+            content: '\2713';
+            font-size: 16px;
+            color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .submit-btn {
+            background-color: #909090;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #696969;
+        }
+    </style>
+{% endblock meta %}
+{% block content %}
+    <div class="container">
+        <h1>Form Registrasi</h1>
+        {% if messages %}
+        <div>
+            {% for message in messages %}
+            <div style="color: red;">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            Email: <br>
+            <input type="email" name="email"><br>
+            Password: <br>
+            <input type="password" name="password"><br>
+            Nama: <br>
+            <input type="text" name="nama"><br>
+            Gender: <br>
+            <select name="gender">
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+            </select><br>
+            Tempat Lahir: <br>
+            <input type="text" name="tempat_lahir"><br>
+            Tanggal Lahir: <br>
+            <input type="date" name="tanggal_lahir"><br>
+            Kota Asal: <br>
+            <input type="text" name="kota_asal"><br>
+            Role:<br>
+            <label class="checkbox-label">
+                <input type="checkbox" name="role" value="Podcaster">
+                Podcaster
+            </label><br>
+            <label class="checkbox-label">
+                <input type="checkbox" name="role" value="Artist">
+                Artist
+            </label><br>
+            <label class="checkbox-label">
+                <input type="checkbox" name="role" value="Songwriter">
+                Songwriter
+            </label><br>
+            <input type="submit" value="Submit" class="submit-btn">
+        </form>
+    </div>
+{% endblock content %}
