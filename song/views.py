@@ -222,3 +222,29 @@ def delete_song(request, song_id):
             print("Song deleted successfully!")
     except Exception as e:
         print("Error:", e)
+        
+
+def royalty(request):
+    query_str = """
+    SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
+           r.jumlah AS total_royalti
+    FROM song s
+    LEFT JOIN album a ON s.id_album = a.id
+    LEFT JOIN konten k ON s.id_konten = k.id
+    LEFT JOIN royalti r ON s.id_konten = r.id_song
+    """
+    
+    try:
+        royalties = query(query_str)
+        
+        if isinstance(royalties, Exception):
+            raise royalties
+
+        royalties = [{'judul_lagu': royalty.judul_lagu, 'judul_album': royalty.judul_album, 
+                      'total_play': royalty.total_play, 'total_download': royalty.total_download, 
+                      'total_royalti': f"Rp {royalty.total_royalti}"} 
+                     for royalty in royalties]
+    except Exception as e:
+        return HttpResponseServerError(f"An error occurred: {e}")
+
+    return render(request, 'royalty.html', {'royalties': royalties})

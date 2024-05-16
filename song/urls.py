@@ -14,4 +14,5 @@ urlpatterns = [
     path('label_list_album/', label_list_album, name='label_list_album'),
     path('label_list_song/', label_list_song, name='label_list_song'),
     path('delete_song/<uuid:song_id>/', delete_song, name='delete_song'),
+    path('royalty/', royalty, name='royalty'),
 ]
