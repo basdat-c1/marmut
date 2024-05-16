@@ -122,6 +122,7 @@ def pengguna_form(request):
         with connection.cursor() as cursor:
             cursor.execute(
                 f"INSERT INTO marmut.AKUN VALUES ('{email}','{password}', '{nama}', '{gender}', '{tempat_lahir}', '{tanggal_lahir}', '{is_verified}', '{kota_asal}'); "
+                f"INSERT INTO marmut.NONPREMIUM VALUES ('{email}');"
             )
         return redirect('/login')
     return render(request, 'pengguna_form.html')
