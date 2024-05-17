@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Episode List{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Daftar Episode Podcast 1</h2>
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Judul Episode</th>
+                <th scope="col">Deskripsi</th>
+                <th scope="col">Durasi</th>
+                <th scope="col">Tanggal</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for episode in episodes %}
+            <tr>
+                <td>{{ episode.judul }}</td>
+                <td>{{ episode.deskripsi }}</td>
+                <td>{{ episode.durasi }}</td>
+                <td>{{ episode.tanggal | date:"Y-m-d" }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm">Hapus</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

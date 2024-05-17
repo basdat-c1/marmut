@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Chart Details
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 style="text-align: center;">Chart Details</h2>
+    <p><b>Tipe: </b>Daily Top 20</p>
+    <button class="btn btn-secondary" onclick="goBack()">Kembali</button>
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Judul Lagu</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Tanggal Rilis</th>
+                <th scope="col">Total Plays</th>
+                <th scope="col" class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for song in songs %}
+            <tr>
+                <td>{{ song.judul }}</td>
+                <td>{{ song.artist }}</td>
+                <td>{{ song.tanggal_rilis|date:"Y-m-d" }}</td>
+                <td>{{ song.total_plays }}</td>
+                <td class="text-center">
+                    <a href="" class="btn btn-secondary">See Song</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

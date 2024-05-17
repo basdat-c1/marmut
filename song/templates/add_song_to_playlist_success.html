@@ -1,24 +1,27 @@
 {% extends 'base.html' %}
 
+{% block title %}Tambah Lagu ke Playlist{% endblock title %}
+
 {% block content %}
 
 <div>
-    <h1 class="text-center mb-4">Download Song Success!</h1> 
+    <h1 class="text-center mb-4">Add Song to User Playlist Success!</h1> 
 
     <div class="text-center mb-4">
-        <p class="fs-5 mb-0"><b>Berhasil mengunduh Lagu dengan judul ‘Song1’!</b></p>
+        <p class="fs-5 mb-0"><b>Berhasil menambahkan Lagu dengan judul 'Let It Go' ke 'Disney Songs'!</b></p>
     </div>
 
     <div class="text-center">
         <div class="justify-content-center mb-3">
-            <a href="">
-                <!-- pergi ke daftar lagu yang sudah di download -->
-                <button type="button" class="btn btn-secondary btn-block mx-1">Ke Daftar Download</button>
+            <a href="../../playlist/detail/">
+                <!-- pergi ke playlist 1 -->
+                <button type="button" class="btn btn-secondary btn-block mx-1">Ke Playlist</button>
             </a>
             <a href="../play">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
             </a>
             <!-- <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button> -->
+
         </div>
     </div>
 

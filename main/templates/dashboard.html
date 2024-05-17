@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Dashboard{% endblock title %}
+
 {% block content %}
 
 <div>
@@ -7,61 +9,56 @@
 
     <br>
 
-    <p class="fs-5 mb-1"><b>Nama: </b>tes</p>
-    <p class="fs-5 mb-1"><b>Email: </b>tes</p>
     <!-- if user is label -->
-        <p class="fs-5 mb-1"><b>Kontak: </b>tes</p>
+        <p class="fs-5 mb-1"><b>Nama: </b>Nambo Inc</p>
+        <p class="fs-5 mb-1"><b>Email: </b>namborinambo@gmail.com</p>
+        <p class="fs-5 mb-1"><b>Kontak: </b>081426381923</p>
     <!-- else -->
-        <p class="fs-5 mb-1"><b>Kota asal: </b>tes</p>
-        <p class="fs-5 mb-1"><b>Gender: </b>tes</p>
-        <p class="fs-5 mb-1"><b>Tempat lahir: </b>tes</p>
-        <p class="fs-5 mb-1"><b>Tanggal lahir: </b>tes</p>
-        <p class="fs-5 mb-1"><b>Role(s): </b>tes1, tes2, tes3</p>
+        <!-- <p class="fs-5 mb-1"><b>Nama: </b>Budi Budi</p>
+        <p class="fs-5 mb-1"><b>Email: </b>budibudi@gmail.com</p>
+        <p class="fs-5 mb-1"><b>Kota asal: </b>Nambo</p>
+        <p class="fs-5 mb-1"><b>Gender: </b>Laki-laki</p>
+        <p class="fs-5 mb-1"><b>Tempat lahir: </b>Nambo</p>
+        <p class="fs-5 mb-1"><b>Tanggal lahir: </b>1 Januari 2004</p>
+        <p class="fs-5 mb-1"><b>Role(s): </b>Artist/Songwriter, Podcaster</p> -->
     <!-- end if -->
 
     <br>
 
     <!-- if user is label -->
+
+        
         <p class="fs-5 mb-0"><b>Daftar Album:</b></p>
         <table id="tabel_album" class="table table-bordered text-center">
             <thead>
                 <tr>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Label</th>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
                     <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
                 </tr>
             </thead>
             <tbody>
+                {% for album in data_album %}
                 <tr>
-                    <td scope="row">1</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                    <td>tes</td>
+                    <td scope="row">{{forloop.counter}}</td>
+                    <td>{{album.judul}}</td>
+                    <td>{{album.nama_label}}</td>
+                    <td>{{album.jumlah_lagu}}</td>
+                    <td>{{album.total_durasi}}</td>
                 </tr>
-                <tr>
-                    <td scope="row">2</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                </tr>
-                <tr>
-                    <td scope="row">3</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                    <td>tes</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
         
         <br>
     
+
     <!-- else -->
         <!-- if user is pengguna biasa -->
+
+
             <p class="fs-5 mb-0"><b>Daftar Playlist:</b></p>
             <table id="tabel_playlist" class="table table-bordered text-center">
                 <thead>
@@ -78,89 +75,63 @@
                 <tbody>
                     <tr>
                         <td scope="row">1</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">2</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                    </tr>
-                    <tr>
-                        <td scope="row">3</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
-                        <td>tes</td>
+                        <td>Disney Songs</td>
+                        <td>Budi Budi</td>
+                        <td>15</td>
+                        <td>1 jam 5 menit</td>
+                        <td>1 Januari 2022</td>
+                        <td>Song from disney movies</td>
                     </tr>
                 </tbody>
             </table>
 
             <br>
+
+
         <!-- else -->
             <!-- if user is songwriter or user is artist -->
+
+
                 <p class="fs-5 mb-0"><b>Daftar Lagu:</b></p>
                 <table id="tabel_lagu" class="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Genre(s)</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Artis</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Album</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Songwriter(s)</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
+                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Play</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Download</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for lagu in data_lagu %}
                         <tr>
-                            <td scope="row">1</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
+                            <td scope="row">{{forloop.counter}}</td>
+                            <td>{{lagu.judul}}</td>
+                            <td>{{lagu.genre}}</td>
+                            <td>{{lagu.artist}}</td>
+                            <td>{{lagu.songwriter}}</td>
+                            <td>{{lagu.durasi}}</td>
+                            <td>{{lagu.tanggal_rilis}}</td>
+                            <td>{{lagu.total_play}}</td>
+                            <td>{{lagu.total_download}}</td>
                         </tr>
-                        <tr>
-                            <td scope="row">2</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                        </tr>
-                        <tr>
-                            <td scope="row">3</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
 
                 <br>
+
+
             <!-- end if -->
 
             <!-- if user is podcaster -->
+
+
                 <p class="fs-5 mb-0"><b>Daftar Podcast:</b></p>
                 <table id="tabel_podcast" class="table table-bordered text-center">
                     <thead>
@@ -175,29 +146,17 @@
                     <tbody>
                         <tr>
                             <td scope="row">1</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                        </tr>
-                        <tr>
-                            <td scope="row">2</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                        </tr>
-                        <tr>
-                            <td scope="row">3</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
-                            <td>tes</td>
+                            <td>Malam Minggu</td>
+                            <td>1 Januari 2023</td>
+                            <td>50 menit</td>
+                            <td>Budi Budi</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <br>
+
+
             <!-- end if -->
         <!-- end if -->
      <!-- end if -->

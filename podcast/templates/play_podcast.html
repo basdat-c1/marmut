@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Podcast List{% endblock %}
+{% block content %}
+<h3 style="text-align: center;">Podcast Detail</h3>
+
+
+<div class="container mt-4">
+    <p><b>Judul: </b>The Thinker</p>
+    <p><b>Genre(s): </b>Filsuf</p>
+    <p><b>Podcaster: </b>Deddy Corbuzier</p>
+    <p><b>Total Durasi: </b>15 Jam 30 menit</p>
+    <p><b>Tanggal Rilis: </b>03/03/24</p>
+    <p><b>Tahun: </b>2024</p>
+    <button class="btn btn-secondary" onclick="goBack()">Kembali</button>
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th colspan="4" style="text-align: center;">Daftar Podcast</th>
+            </tr>
+            <tr>
+                <th scope="col">Judul Episode</th>
+                <th scope="col">Deskripsi</th>
+                <th scope="col">Durasi</th>
+                <th scope="col">Tanggal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for podcast in podcasts %}
+            <tr>
+                <td>{{ podcast.judul }}</td>
+                <td>{{ podcast.deskripsi }}</td>
+                <td>{{ podcast.durasi }}</td>
+                <td>{{ podcast.tanggal|date:"Y-m-d" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

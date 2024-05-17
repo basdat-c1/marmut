@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Chart List
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th colspan="2" style="text-align: center;">Chart List</th>
+            </tr>
+            <tr>
+                <th scope="col">Tipe</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Daily Top 20</td>
+                <td><a href="{% url 'main:chart_detail' %}" class="btn btn-secondary">View Chart</a></td>
+            </tr>
+            <tr>
+                <td>Weekly Top 20</td>
+                <td><a href="{% url 'main:chart_detail' %}" class="btn btn-secondary">View Chart</a></td>
+            </tr>
+            <tr>
+                <td>Monthly Top 20</td>
+                <td><a href="{% url 'main:chart_detail' %}" class="btn btn-secondary">View Chart</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-secondary" onclick="goBack()">Kembali</button>
+</div>
+{% endblock %}
