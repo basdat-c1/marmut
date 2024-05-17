@@ -1,14 +1,97 @@
-import uuid
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from utils.query import query
-from django.contrib import messages
-from django.db import connection
+from utils.decorator import custom_login_required
+# from .forms import RegisterForm
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = query(f"SELECT * FROM AKUN WHERE email = '{email}' AND password = '{password}'")
+        if user:
+            user_info = query(f"SELECT nama FROM AKUN WHERE email = '{email}' AND password = '{password}'")
+            if user_info:
+                nama = user_info[0].nama
+            else:
+                nama = None
+            print(nama)
+            print("Saya user")
+            is_podcaster = False
+            is_artist = False
+            is_songwriter = False
+            # is_label = False
+            is_premium = check_is_premium(email)
+            request.session['is_premium'] = is_premium
+            roles = get_roles(email)
 
+            request.session["email"] = email
+            request.session["nama"] =  nama
+            request.session["password"] = password
+            
+            is_podcaster = "podcaster" in roles
+            is_artist = "artist" in roles
+            is_songwriter = "songwriter" in roles
+            # is_label = "label" in roles
+            print(is_podcaster)
+            print(is_artist)
+            print(is_songwriter)
 
+            request.session['is_podcaster'] = is_podcaster
+            request.session['is_artist'] = is_artist
+            request.session['is_songwriter'] = is_songwriter
+            # request.session['is_label'] = is_label
+            request.session.set_expiry(0)
+            request.session.modified = True
 
+            return redirect("/")
+        else:
+            print("Saya label")
+            label = query(f"SELECT * FROM LABEL WHERE email = '{email}' and password = '{password}'")
+            if label:
+                is_label = True
+                request.session["is_label"] = is_label
+                request.session["email"] = email
+                request.session["password"] = password
+                request.session.set_expiry(0)
+                request.session.modified = True
+
+                return redirect("/")
+            else:
+                messages.error(request, "Email atau Password Salah, silahkan coba lagi")
+                return redirect("/login/")
+    else:
+        return render(request, 'login.html')
+
+def logout(request):
+    request.session.flush()
+    request.session.clear_expired()
+    return redirect("/login-or-register")
+
+def get_roles(email):
+    user = query(f"SELECT * FROM PODCASTER WHERE email = '{email}'")
+    roles = []
+    if user:
+        roles.append("podcaster")
+    user = query(f"SELECT * FROM ARTIST WHERE email_akun = '{email}'")
+    if user:
+        roles.append("artist")
+    user = query(f"SELECT * FROM SONGWRITER WHERE email_akun = '{email}'")
+    if user:
+        roles.append("songwriter")
+    # user = query(f"SELECT * FROM LABEL WHERE email = '{email}'")
+    # if user:
+    #     roles.append("label")
+    return roles
+
+def check_is_premium(email):
+    user = query(f"SELECT * FROM PREMIUM WHERE email = '{email}'")
+    if user:
+        return True
+    return False
 def login_page(request):
     context = {}
     return render(request, 'login.html', context)
@@ -16,7 +99,7 @@ def login_page(request):
 def login_register_page(request):
     return render(request, 'login_register.html', {})
 
-# @login_required(login_url='/login')
+@custom_login_required
 # @csrf_exempt
 def show_dashboard(request):
     user = request.user
@@ -80,7 +163,6 @@ def show_dashboard(request):
     }
 
     return render(request, "dashboard.html", context)
-
 
 def register(request):
     return render(request, 'register.html')

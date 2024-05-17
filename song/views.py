@@ -1,6 +1,8 @@
 import datetime
+from django.urls import reverse
 from django.shortcuts import render
 from django.db import connection
+from utils.decorator import custom_login_required
 from utils.query import query
 from django.http import HttpResponseServerError
 from uuid import UUID
@@ -34,9 +36,6 @@ def add_song_to_playlist_success(request):
 def download_song(request):
     context = {}
     return render(request, "download_song.html", context)
-
-def create_album(request):
-    return render(request, 'create_album.html')
 
 
 def list_album(request):
@@ -79,28 +78,54 @@ def list_songs(request, album_id):
     # Render the template with the fetched data
     return render(request, 'list_songs.html', {'songs': songs})
 
-def create_song_if_artis(request):
-    return render(request, 'create_song_if_artis.html')
 
+from django.contrib.auth.decorators import login_required
 
-
-def create_song_if_songwriter(request):
-    return render(request, 'create_song_if_songwriter.html')
-
-# @login_required
+@custom_login_required
 def label_list_album(request):
-    label_id = request.session.get('label_id')  # Adjust this according to your implementation
+    if 'is_label' in request.session and request.session['is_label']:
+        logged_in_label_email = request.session.get('email')
+        
+        # Query to fetch album data created by the logged-in label
+        query_str = f"""
+        SELECT a.id, a.judul, l.nama AS label, a.jumlah_lagu, a.total_durasi
+        FROM album a
+        LEFT JOIN label l ON a.id_label = l.id
+        WHERE l.email = '{logged_in_label_email}'
+        """
+        try:
+            # Execute the query
+            albums = query(query_str)
+            
+            # Convert album IDs to strings
+            albums = [{'id': str(album.id), 'judul': album.judul, 'label': album.label, 
+                       'jumlah_lagu': album.jumlah_lagu, 'total_durasi': album.total_durasi} 
+                      for album in albums]
+        except Exception as e:
+            # Return a server error response with the error message
+            return HttpResponseServerError(f"An error occurred: {e}")
 
-    # Retrieve albums associated with the label
-    albums_query = f"SELECT * FROM album WHERE id_label = '{label_id}'"
-    albums = query(albums_query)
-    albums = [{'id': str(album.id), 'judul': album.judul, 'label': album.label, 
-                   'jumlah_lagu': album.jumlah_lagu, 'total_durasi': album.total_durasi} 
-                  for album in albums]
+        # Render the template with the fetched data
+        return render(request, 'list_album.html', {'albums': albums})
+    else:
+        # Redirect to some error page or login page if the user is not a label
+        return redirect("/login/")  # Adjust the URL as needed
 
-    # Pass the albums data to the template for rendering
-    return render(request, 'list_albums.html', {'albums': albums})
-    # query_str = """
+
+# @custom_login_required
+# def label_list_album(request):
+#     label_id = request.session.get('label_id')  # Adjust this according to your implementation
+
+#     # Retrieve albums associated with the label
+#     albums_query = f"SELECT * FROM album WHERE id_label = '{label_id}'"
+#     albums = query(albums_query)
+#     albums = [{'id': str(album.id), 'judul': album.judul, 'label': album.label, 
+#                    'jumlah_lagu': album.jumlah_lagu, 'total_durasi': album.total_durasi} 
+#                   for album in albums]
+
+#     # Pass the albums data to the template for rendering
+#     return render(request, 'list_albums.html', {'albums': albums})
+#     # query_str = """
     # SELECT a.id, a.judul, l.nama AS label, a.jumlah_lagu, a.total_durasi
     # FROM album a
     # LEFT JOIN label l ON a.id_label = l.id
@@ -126,43 +151,156 @@ def label_list_album(request):
 def label_list_song(request):
     return render(request, 'label_list_song.html')
 
+@custom_login_required
+def create_album(request):
+    # # nama = request.user.nama
+    # nama_album = request.GET.get('nama_album')
+    # print(nama_album)
+    # album_id_query = f"SELECT id FROM ALBUM WHERE judul = '{nama_album}'"
+    album_id = str(uuid.uuid4())
+    print(f"id:{album_id}")
+    labels = query("SELECT * FROM LABEL")
+    songwriters = query("SELECT nama FROM AKUN JOIN SONGWRITER ON AKUN.email = SONGWRITER.email_akun;")
+    artists = query("SELECT nama FROM AKUN JOIN ARTIST ON AKUN.email = ARTIST.email_akun;")
+    genres = query("SELECT DISTINCT GENRE FROM GENRE")
+    genre_names = [result.genre for result in genres]
+    print(genre_names)
+
+    if request.method == 'POST':
+        judul_album = request.POST['judul_album']
+        durasi = int(request.POST['durasi'])
+        genre_ids = request.POST.getlist('genre')
+        judul_lagu = request.POST['judul_lagu']
+        label = request.POST['label']
 
 
-# @login_required
-def create_song(request):
-    user = request.user
+        # # jgn di komen KALO LOGIN UDH DIIMPLEMENTASI
+        if request.session['is_artist'] == True:
+            artist_id_query = f"SELECT id FROM ARTIST WHERE email_akun = '{request.session['email']}'"
+            artist_id_result = query(artist_id_query)
+            artist_id = artist_id_result[0].id if artist_id_result else None
+            print(f"artis: {artist_id}")
+            songwriter_ids = request.POST.getlist('songwriter')
+        elif request.session['is_songwriter'] == True:
+            print(f"ini songwriter")
+            artist_name = request.POST.get('artist')
+            print(f"artistname:{artist_name}")
+            artist_id_query = f"""
+                SELECT ARTIST.id
+                FROM ARTIST
+                JOIN AKUN ON ARTIST.email_akun = AKUN.email
+                WHERE AKUN.nama = '{artist_name}'
+            """
+            artist_id_results = query(artist_id_query)
+            artist_id = artist_id_results[0].id if artist_id_results else None
+            print(f"artistid:{artist_id}")
+            songwriter_id_query = f"SELECT id FROM SONGWRITER WHERE email_akun = '{request.session['email']}'"
+            songwriter_id_results = query(songwriter_id_query)
+            songwriter_ids = [result.id for result in songwriter_id_results] if songwriter_id_results else []
+
+        id_konten = str(uuid.uuid4())
+
+
+        
+        tanggal_rilis = timezone.now().date()
+        tahun = tanggal_rilis.year
+        
+        # tambah trigger ga sih ini
+        insert_album_query = f"""
+        INSERT INTO ALBUM (id, judul, jumlah_lagu, id_label, total_durasi)
+        VALUES ('{album_id}', '{judul_album}', 0, '{label}', 0);
+        """
+        query(insert_album_query)
+
+        insert_konten_query = f"""
+        INSERT INTO KONTEN (id, judul, tanggal_rilis, tahun, durasi)
+        VALUES ('{id_konten}', '{judul_lagu}', '{tanggal_rilis}', {tahun}, {durasi});
+        """
+        query(insert_konten_query)
+
+        insert_song_query = f"""
+        INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
+        VALUES ('{id_konten}', '{artist_id}', '{album_id}', 0, 0);
+        """
+        query(insert_song_query)
+        
+        # album_id = str(uuid.uuid4())
+
+
+        for songwriter_id in songwriter_ids:
+            insert_songwriter_write_song_query = f"""
+            INSERT INTO SONGWRITER_WRITE_SONG (id_songwriter, id_song)
+            VALUES ('{songwriter_id}', '{id_konten}');
+            """
+            query(insert_songwriter_write_song_query)
+
+        for genre in genre_ids:
+            insert_genre_query = f"""
+            INSERT INTO GENRE (id_konten, genre)
+            VALUES ('{id_konten}', '{genre}');
+            """
+            query(insert_genre_query)
+
+        # return redirect(list_songs, uuid=album_id)
+        # print(album_id)
+        # album_id_str = str(album_id)
+        # album_id_uuid = uuid.UUID(album_id_str)
+        return redirect('song:list_songs', album_id)
+    
+    
+    context = {
+        'labels': labels,
+        'songwriters': songwriters,
+        'artists': artists,
+        'genres': genre_names
+    }
+    return render(request, 'create_album.html', context)
+
+
+@custom_login_required
+def create_song(request, album_id):
     nama_album = request.GET.get('nama_album')  # Get album name from query parameters
+    print(f"nama album: {nama_album}")
 
-    # Fetch the album ID based on the album name
-    album_id_query = f"SELECT id FROM ALBUM WHERE judul = '{nama_album}'"
-    album_id = query(album_id_query)
-    # print(album_id)
-    # print(album_id_result)
-    # if not album_id_result:
-    #     return render(request, 'error_page.html', {'message': 'Album not found'})  # Handle case when album is not found
-    # album_id = album_id_result[0].id
+    print("album id:")
+    print(album_id)
+    genres = query("SELECT DISTINCT GENRE FROM GENRE")
+    genre_names = [result.genre for result in genres]
+    songwriters = query("SELECT nama FROM AKUN JOIN SONGWRITER ON AKUN.email = SONGWRITER.email_akun;")
+    artists = query("SELECT nama FROM AKUN JOIN ARTIST ON AKUN.email = ARTIST.email_akun;")
+    # artists = query(f"SELECT id FROM ARTIST WHERE email_akun = '{user.email}'")
 
     if request.method == 'POST':
         judul = request.POST['judul']
         durasi = int(request.POST['durasi'])
         genre_ids = request.POST.getlist('genre')
 
-        # UNCOMMAND KALO LOGIN UDH DIIMPLEMENTASI
-        if user.role == 'artist':
-            artist_id_query = f"SELECT id FROM ARTIST WHERE email_akun = '{user.email}'"
+
+        # # jgn di komen KALO LOGIN UDH DIIMPLEMENTASI
+        if request.session['is_artist'] == True:
+            print(f"ini artis")
+            artist_id_query = f"SELECT id FROM ARTIST WHERE email_akun = '{request.session['email']}'"
             artist_id_result = query(artist_id_query)
             artist_id = artist_id_result[0].id if artist_id_result else None
             songwriter_ids = request.POST.getlist('songwriter')
-        elif user.role == 'songwriter':
-            artist_id = request.POST['artist']
-            songwriter_id_query = f"SELECT id FROM SONGWRITER WHERE email_akun = '{user.email}'"
-            songwriter_id_result = query(songwriter_id_query)
-            print(songwriter_id_result)
-            # songwriter_ids = [songwriter_id_result[0].id if songwriter_id_result else None]
+        elif request.session['is_songwriter'] == True:
+            print(f"ini songwriter")
+            artist_name = request.POST.get('artist')
+            print(f"artistname:{artist_name}")
+            artist_id_query = f"""
+                SELECT ARTIST.id
+                FROM ARTIST
+                JOIN AKUN ON ARTIST.email_akun = AKUN.email
+                WHERE AKUN.nama = '{artist_name}'
+            """
+            artist_id_results = query(artist_id_query)
+            artist_id = artist_id_results[0].id if artist_id_results else None
+            print(f"artistid:{artist_id}")
+            songwriter_id_query = f"SELECT id FROM SONGWRITER WHERE email_akun = '{request.session['email']}'"
+            songwriter_id_results = query(songwriter_id_query)
+            songwriter_ids = [result.id for result in songwriter_id_results] if songwriter_id_results else []
 
         id_konten = str(uuid.uuid4())
-        song_id = str(uuid.uuid4())
-
         tanggal_rilis = timezone.now().date()
         tahun = tanggal_rilis.year
 
@@ -172,6 +310,12 @@ def create_song(request):
         """
         query(insert_konten_query)
 
+        print(f"ini insert into song:")
+        print(f"artis name:{artist_name}")
+        print(f"artis id:{artist_id}")
+        print(f"konten id:{id_konten}")
+        print(f"album id:{album_id}")
+        print(f"songwriter: {songwriter_ids}")
         insert_song_query = f"""
         INSERT INTO SONG (id_konten, id_artist, id_album, total_play, total_download)
         VALUES ('{id_konten}', '{artist_id}', '{album_id}', 0, 0);
@@ -192,18 +336,19 @@ def create_song(request):
             """
             query(insert_genre_query)
 
-        return redirect(f'/list_songs/{album_id}') 
-    songwriters_query = "SELECT id, nama FROM AKUN WHERE email IN (SELECT email_akun FROM SONGWRITER)"
-    songwriters = query(songwriters_query)
+        # return redirect(list_songs, uuid=album_id)
+        print(album_id)
+        album_id_str = str(album_id)
+        album_id_uuid = uuid.UUID(album_id_str)
+        return redirect('song:list_songs', album_id_uuid)
     
-    artists_query = "SELECT id, nama FROM AKUN WHERE email IN (SELECT email_akun FROM ARTIST)"
-    artists = query(artists_query)
     
     context = {
-        'user': user,
+        # 'user': user,
         'songwriters': songwriters,
         'artists': artists,
-        'nama_album': nama_album,  # Pass album name to the context
+        'nama_album': nama_album, 
+        'genres': genre_names
     }
     return render(request, "create_song.html", context)
 
@@ -212,6 +357,12 @@ def delete_song(request, song_id):
     try:
         # Define the DELETE query
         delete_query = f"DELETE FROM SONG WHERE id_konten = '{song_id}';"
+        
+        album_id_query = f"SELECT id_album FROM SONG WHERE id_konten = '{song_id}';"
+        album_id_result = query(album_id_query)
+        album_id = album_id_result[0][0]  # Accessing the first element of the first tuple in the result
+        print(f"albumid:{album_id}")
+
 
         # Execute the DELETE query
         result = query(delete_query)
@@ -222,18 +373,99 @@ def delete_song(request, song_id):
             print("Song deleted successfully!")
     except Exception as e:
         print("Error:", e)
-        
+    return redirect('song:list_songs', album_id)
 
-def royalty(request):
-    query_str = """
-    SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
-           r.jumlah AS total_royalti
-    FROM song s
-    LEFT JOIN album a ON s.id_album = a.id
-    LEFT JOIN konten k ON s.id_konten = k.id
-    LEFT JOIN royalti r ON s.id_konten = r.id_song
-    """
+def delete_album(request, album_id):
+    try:
+        # Define the DELETE query
+        delete_query = f"DELETE FROM ALBUM WHERE id = '{album_id}';"
+
+        # Execute the DELETE query
+        result = query(delete_query)
+
+        if isinstance(result, Exception):
+            print("Error while deleting song:", result)
+        else:
+            print("Album deleted successfully!")
+    except Exception as e:
+        print("Error:", e)
+    return redirect('/song/list_album/')
+
+# def royalty(request):
+    # query_str = """
+    # SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
+    #        r.jumlah AS total_royalti
+    # FROM song s
+    # LEFT JOIN album a ON s.id_album = a.id
+    # LEFT JOIN konten k ON s.id_konten = k.id
+    # LEFT JOIN royalti r ON s.id_konten = r.id_song
+    # """
     
+    # try:
+    #     royalties = query(query_str)
+        
+    #     if isinstance(royalties, Exception):
+    #         raise royalties
+
+    #     royalties = [{'judul_lagu': royalty.judul_lagu, 'judul_album': royalty.judul_album, 
+    #                   'total_play': royalty.total_play, 'total_download': royalty.total_download, 
+    #                   'total_royalti': f"Rp {royalty.total_royalti}"} 
+    #                  for royalty in royalties]
+    # except Exception as e:
+    #     return HttpResponseServerError(f"An error occurred: {e}")
+
+    # return render(request, 'royalty.html', {'royalties': royalties})
+
+@custom_login_required
+def royalty(request):
+    user_email = request.session['email']
+    print(f"email:{user_email}")
+    
+    # if request.session['is_label'] == True:
+    if 'is_label' in request.session and request.session['is_label']:
+        query_str = f"""
+        SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
+               r.jumlah AS total_royalti
+        FROM song s
+        LEFT JOIN album a ON s.id_album = a.id
+        LEFT JOIN konten k ON s.id_konten = k.id
+        LEFT JOIN royalti r ON s.id_konten = r.id_song
+        WHERE s.id_album IN (
+            SELECT id FROM album WHERE id_label = (
+                SELECT id FROM label WHERE email = '{user_email}'
+            )
+        )
+        """
+    else:
+        query_str = ""
+        # if request.session['is_songwriter'] == True:
+        if 'is_songwriter' in request.session and request.session['is_songwriter']:
+            query_str = f"""
+            SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
+                r.jumlah AS total_royalti
+            FROM song s
+            LEFT JOIN album a ON s.id_album = a.id
+            LEFT JOIN konten k ON s.id_konten = k.id
+            LEFT JOIN royalti r ON s.id_konten = r.id_song
+            WHERE s.id_konten IN (
+                SELECT id_song FROM songwriter_write_song WHERE id_songwriter = (
+                SELECT id FROM songwriter WHERE email_akun = '{user_email}'
+                )
+            )
+            """
+        # elif request.session['is_artist'] == True:
+        elif 'is_artist' in request.session and request.session['is_artist']:
+            query_str = f"""
+            SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
+                r.jumlah AS total_royalti
+            FROM song s
+            LEFT JOIN album a ON s.id_album = a.id
+            LEFT JOIN konten k ON s.id_konten = k.id
+            LEFT JOIN royalti r ON s.id_konten = r.id_song
+            WHERE s.id_artist IN (
+                SELECT id FROM artist WHERE email_akun = '{user_email}'
+            )
+            """
     try:
         royalties = query(query_str)
         
@@ -248,3 +480,13 @@ def royalty(request):
         return HttpResponseServerError(f"An error occurred: {e}")
 
     return render(request, 'royalty.html', {'royalties': royalties})
+
+# def generate_unique_uuid():
+#     while True:
+#         new_uuid = str(uuid.uuid4())
+#         query = f"SELECT COUNT(*) FROM marmut.LABEL WHERE id = '{new_uuid}'"
+#         with connection.cursor() as cursor:
+#             cursor.execute(query)
+#             result = cursor.fetchone()
+#             if result[0] == 0:  
+#                 return new_uuid

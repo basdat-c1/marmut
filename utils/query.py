@@ -18,5 +18,6 @@ def query(query_str: str):
                 result = cursor.rowcount
         except Exception as e:
             result = e
+        cursor.execute("set search_path to public")
 
     return result

@@ -84,7 +84,7 @@
                     <td>{{ song.total_download }}</td>
                     <td class="action-btns">
                         <a href="#">Lihat Detail</a>
-                        <a href="#">Hapus</a>
+                        <a href="{% url 'song:delete_song' song.id %}">Hapus</a>
                     </td>
                 </tr>
                 {% endfor %}

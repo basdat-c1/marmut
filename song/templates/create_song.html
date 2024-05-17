@@ -64,10 +64,10 @@
             <label for="judul">Judul:</label>
             <input type="text" id="judul" name="judul" required>
         </div>
-        {% if user.role == "artist" %}
+        {% if request.session.is_artist %}
         <div class="form-group">
             <label for="artist">Artist:</label>
-            <input type="text" id="artist" name="artist" value="{{ user.nama }}" readonly>
+            <input type="text" id="artist" name="artist" value="{{ request.session.nama }}" readonly>
         </div>
         <div class="form-group">
             <label for="songwriter">Songwriter:</label>
@@ -77,26 +77,34 @@
                 {% endfor %}
             </select>
         </div>
-        {% elif user.role == "songwriter" %}
+        {% endif %}
+        {% if request.session.is_songwriter  %}
         <div class="form-group">
             <label for="artist">Artist:</label>
             <select id="artist" name="artist" required>
                 {% for artist in artists %}
-                <option value="{{ artist.id }}">{{ artist.nama }}</option>
+                <option value="{{ artist.nama }}">{{ artist.nama }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
             <label for="songwriter">Songwriter:</label>
-            <input type="text" id="songwriter" name="songwriter" value="{{ user.nama }}" readonly>
+            <input type="text" id="songwriter" name="songwriter" value="{{ request.session.nama }}" readonly>
+            <select id="songwriter" name="songwriter" multiple required>
+                {% for songwriter in songwriters %}
+                    {% if songwriter.nama != request.session.nama %}
+                        <option value="{{ songwriter.id }}">{{ songwriter.nama }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
         </div>
         {% endif %}
         <div class="form-group">
             <label for="genre">Genre:</label>
             <select id="genre" name="genre" multiple required>
-                <option value="pop">Pop</option>
-                <option value="rock">Rock</option>
-                <option value="jazz">Jazz</option>
+                {% for g in genres %}
+                <option value="{{ g }}">{{ g }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="form-group">
