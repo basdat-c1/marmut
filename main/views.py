@@ -5,9 +5,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from utils.query import query
-from django.db import connection
-
 from utils.decorator import custom_login_required
+from django.db import connection
+from django.db import IntegrityError, transaction, connection, InternalError
 # from .forms import RegisterForm
 @csrf_exempt
 def login(request):
@@ -16,6 +16,12 @@ def login(request):
         password = request.POST.get('password')
         user = query(f"SELECT * FROM AKUN WHERE email = '{email}' AND password = '{password}'")
         if user:
+            user_info = query(f"SELECT nama FROM AKUN WHERE email = '{email}' AND password = '{password}'")
+            if user_info:
+                nama = user_info[0].nama
+            else:
+                nama = None
+            print(nama)
             print("Saya user")
             is_podcaster = False
             is_artist = False
@@ -23,10 +29,10 @@ def login(request):
             is_premium = check_is_premium(email)
             request.session['is_premium'] = is_premium
             roles = get_roles(email)
-            
+
             request.session["email"] = email
+            request.session["nama"] =  nama
             request.session["password"] = password
-            
             
             is_podcaster = "podcaster" in roles
             is_artist = "artist" in roles
@@ -155,78 +161,9 @@ def show_dashboard(request):
 
     return render(request, "dashboard.html", context)
 
-
 def register(request):
     return render(request, 'register.html')
 
-def pengguna_form(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        email_query = f"SELECT * FROM AKUN WHERE email = '{email}'"
-        email_result = query(email_query)
-        # cek email di akun
-        if email_result:
-            messages.error(request, 'Email is already associated with another user account.')
-            return redirect('/pengguna_form')
-        # cek email di label
-        email_query_label = f"SELECT * FROM LABEL WHERE email = '{email}'"
-        email_result_label = query(email_query_label)
-        if email_result_label:
-            messages.error(request, 'Email is already associated with a label account.')
-            return redirect('/pengguna_form')
-        password = request.POST.get('password')
-        nama = request.POST.get('nama')
-        gender = request.POST.get('gender')
-        if gender == 'L':
-            gender = 1
-        else:
-            gender = 0
-        tempat_lahir = request.POST.get('tempat_lahir')
-        tanggal_lahir = request.POST.get('tanggal_lahir')
-        kota_asal = request.POST.get('kota_asal')
-        roles = request.POST.getlist('role')
-        
-        if roles:
-            is_verified = True
-            role = ', '.join(roles)
-        else:
-            is_verified = False
-            role = 'Pengguna Biasa'
-        
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f"INSERT INTO marmut.AKUN VALUES ('{email}','{password}', '{nama}', '{gender}', '{tempat_lahir}', '{tanggal_lahir}', '{is_verified}', '{kota_asal}'); "
-                f"INSERT INTO marmut.NONPREMIUM VALUES ('{email}');"
-            )
-        return redirect('/login')
-    return render(request, 'pengguna_form.html')
-
-
-def label_form(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        email_query = f"SELECT * FROM LABEL WHERE email = '{email}'"
-        email_result = query(email_query)
-        if email_result:
-            messages.error(request, 'Email is already associated with another label account.')
-            return redirect('/label_form')
-        email_query_akun = f"SELECT * FROM AKUN WHERE email = '{email}'"
-        email_result_akun = query(email_query_akun)
-        if email_result_akun:
-            messages.error(request, 'Email is already associated with a user account.')
-            return redirect('/label_form')
-        uuid = generate_unique_uuid()
-        password = request.POST.get('password')
-        nama = request.POST.get('nama')
-        kontak = request.POST.get('kontak')
-        
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f"INSERT INTO marmut.LABEL VALUES ('{uuid}','{nama}','{email}','{password}','{kontak}'); "
-            )
-        return redirect('/login')
-    
-    return render(request, 'label_form.html')
 
 def generate_unique_uuid():
     while True:
@@ -237,3 +174,72 @@ def generate_unique_uuid():
             result = cursor.fetchone()
             if result[0] == 0:  
                 return new_uuid
+
+
+def pengguna_form(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        gender = request.POST.get('gender')
+        gender = 1 if gender == 'L' else 0
+        tempat_lahir = request.POST.get('tempat_lahir')
+        tanggal_lahir = request.POST.get('tanggal_lahir')
+        kota_asal = request.POST.get('kota_asal')
+        roles = request.POST.getlist('role')
+        
+        is_verified = bool(roles)
+        role = ', '.join(roles) if roles else 'Pengguna Biasa'
+
+        try:
+            with transaction.atomic():
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        INSERT INTO marmut.AKUN (email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+                        """, [email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal]
+                    )
+                    cursor.execute(
+                        "INSERT INTO marmut.NONPREMIUM (email) VALUES (%s);",
+                        [email]
+                    )
+            return redirect('/login')
+        except InternalError as e:
+            if 'marmut.check_email_akun' in str(e):
+                messages.error(request, 'Email sudah terdaftar, silahkan masukan email yang belum terdaftar.')
+            else:
+                messages.error(request, 'Terjadi kesalahan pada database, silahkan coba lagi.')
+        except IntegrityError as e:
+            messages.error(request, 'Terjadi kesalahan pada database, silahkan coba lagi.')
+    
+    return render(request, 'pengguna_form.html')
+
+
+def label_form(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        kontak = request.POST.get('kontak')
+        uuid = generate_unique_uuid()
+
+        try:
+            with transaction.atomic():
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        INSERT INTO marmut.LABEL (id, nama, email, password, kontak) 
+                        VALUES (%s, %s, %s, %s, %s);
+                        """, [uuid, nama, email, password, kontak]
+                    )
+            return redirect('/login')
+        except InternalError as e:
+            if 'marmut.check_email_akun' in str(e):
+                messages.error(request, 'Email sudah terdaftar, silahkan masukan email yang belum terdaftar.')
+            elif 'marmut.check_email_label' in str(e):
+                messages.error(request, 'Email sudah terdaftar, silahkan masukan email yang belum terdaftar.')
+        except IntegrityError as e:
+            messages.error(request, 'Terjadi kesalahan pada database, silahkan coba lagi.')
+    
+    return render(request, 'label_form.html')

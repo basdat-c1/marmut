@@ -60,9 +60,29 @@
             background-color: #808080;
             color: #fff;
         }
-    </style>
 
+        .create-album-btn {
+            text-decoration: none;
+            color: #fff;
+            background-color: #808080;
+            padding: 15px 30px; 
+            border-radius: 5px;
+            border: 1px solid #9d9d9d;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin-top: 10px;
+            text-align: center;
+            display: block; /* Ensure button takes full width */
+            margin: 0 auto; /* Center horizontally */
+        }
+
+        .create-album-btn:hover {
+            background-color: #535353;
+            border: 1px solid #1f1f1f;
+        }
+    </style>
 {% endblock meta %}
+
 {% block content %}
     <div class="container">
         <h2>List Album</h2>
@@ -74,7 +94,6 @@
                     <th>Jumlah Lagu</th>
                     <th>Total Durasi</th>
                     <th>Action</th>
-                    <!-- <th>id</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -84,15 +103,15 @@
                     <td>{{ album.label }}</td>
                     <td>{{ album.jumlah_lagu }}</td>
                     <td>{{ album.total_durasi }}</td>
-                    <!-- <td>{{ album.id }}</td> -->
                     <td class="action-btns">
                         <a href="{% url 'song:list_songs' album.id %}">Lihat Daftar Lagu</a>
-                        <a href="{% url 'song:create_song' %}">Tambah Lagu</a>
-                        <a href="#">Hapus</a>
+                        <a href="{% url 'song:create_song' album.id %}">Tambah Lagu</a>
+                        <a href="{% url 'song:delete_album' album.id %}">Hapus</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <a href="{% url 'song:create_album' %}" class="create-album-btn">Tambah Album</a>
     </div>
 {% endblock content %}
