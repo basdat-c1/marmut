@@ -9,10 +9,8 @@ from uuid import UUID
 from django.shortcuts import render, redirect
 from django.http import HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
-# from .models import Album, Song, Konten, Artist, SongwriterWriteSong, Genre, Songwriter  # Adjust imports based on your project structure
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-# from .models import Artist, Songwriter
 import uuid
 from django.utils import timezone
 from django.shortcuts import render, redirect
@@ -38,27 +36,6 @@ def download_song(request):
     return render(request, "download_song.html", context)
 
 
-def list_album(request):
-    # Query to fetch album data including label information
-    query_str = """
-    SELECT a.id, a.judul, l.nama AS label, a.jumlah_lagu, a.total_durasi
-    FROM album a
-    LEFT JOIN label l ON a.id_label = l.id
-    """
-    try:
-        # Execute the query
-        albums = query(query_str)
-        
-        # Convert album IDs to strings
-        albums = [{'id': str(album.id), 'judul': album.judul, 'label': album.label, 
-                   'jumlah_lagu': album.jumlah_lagu, 'total_durasi': album.total_durasi} 
-                  for album in albums]
-    except Exception as e:
-        # Return a server error response with the error message
-        return HttpResponseServerError(f"An error occurred: {e}")
-
-    # Render the template with the fetched data
-    return render(request, 'list_album.html', {'albums': albums})
 
 
 def list_songs(request, album_id):
@@ -111,41 +88,6 @@ def label_list_album(request):
         # Redirect to some error page or login page if the user is not a label
         return redirect("/login/")  # Adjust the URL as needed
 
-
-# @custom_login_required
-# def label_list_album(request):
-#     label_id = request.session.get('label_id')  # Adjust this according to your implementation
-
-#     # Retrieve albums associated with the label
-#     albums_query = f"SELECT * FROM album WHERE id_label = '{label_id}'"
-#     albums = query(albums_query)
-#     albums = [{'id': str(album.id), 'judul': album.judul, 'label': album.label, 
-#                    'jumlah_lagu': album.jumlah_lagu, 'total_durasi': album.total_durasi} 
-#                   for album in albums]
-
-#     # Pass the albums data to the template for rendering
-#     return render(request, 'list_albums.html', {'albums': albums})
-#     # query_str = """
-    # SELECT a.id, a.judul, l.nama AS label, a.jumlah_lagu, a.total_durasi
-    # FROM album a
-    # LEFT JOIN label l ON a.id_label = l.id
-    # """
-    # try:
-    #     # Execute the query
-    #     albums = query(query_str)
-        
-    #     # Convert album IDs to strings
-    #     albums = [{'id': str(album.id), 'judul': album.judul, 'label': album.label, 
-    #                'jumlah_lagu': album.jumlah_lagu, 'total_durasi': album.total_durasi} 
-    #               for album in albums]
-    # except Exception as e:
-    #     # Return a server error response with the error message
-    #     return HttpResponseServerError(f"An error occurred: {e}")
-
-    # # Render the template with the fetched data
-    # return render(request, 'list_album.html', {'albums': albums})
-
-    # return render(request, 'label_list_album.html')
 
 
 def label_list_song(request):
@@ -404,30 +346,6 @@ def delete_album(request, album_id):
         print("Error:", e)
     return redirect('/song/list_album/')
 
-# def royalty(request):
-    # query_str = """
-    # SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
-    #        r.jumlah AS total_royalti
-    # FROM song s
-    # LEFT JOIN album a ON s.id_album = a.id
-    # LEFT JOIN konten k ON s.id_konten = k.id
-    # LEFT JOIN royalti r ON s.id_konten = r.id_song
-    # """
-    
-    # try:
-    #     royalties = query(query_str)
-        
-    #     if isinstance(royalties, Exception):
-    #         raise royalties
-
-    #     royalties = [{'judul_lagu': royalty.judul_lagu, 'judul_album': royalty.judul_album, 
-    #                   'total_play': royalty.total_play, 'total_download': royalty.total_download, 
-    #                   'total_royalti': f"Rp {royalty.total_royalti}"} 
-    #                  for royalty in royalties]
-    # except Exception as e:
-    #     return HttpResponseServerError(f"An error occurred: {e}")
-
-    # return render(request, 'royalty.html', {'royalties': royalties})
 
 @custom_login_required
 def royalty(request):
@@ -500,12 +418,54 @@ def royalty(request):
 
     return render(request, 'royalty.html', {'royalties': royalties})
 
-# def generate_unique_uuid():
-#     while True:
-#         new_uuid = str(uuid.uuid4())
-#         query = f"SELECT COUNT(*) FROM marmut.LABEL WHERE id = '{new_uuid}'"
-#         with connection.cursor() as cursor:
-#             cursor.execute(query)
-#             result = cursor.fetchone()
-#             if result[0] == 0:  
-#                 return new_uuid
+
+@custom_login_required
+def list_album(request):
+    user_email = request.session.get('email')
+
+    try:
+        with connection.cursor() as cursor:
+            # kalo songwriter
+            cursor.execute("""
+                SELECT id FROM marmut.songwriter WHERE email_akun = %s
+            """, [user_email])
+            songwriter_id = cursor.fetchone()
+
+            # kalo artis
+            cursor.execute("""
+                SELECT id FROM marmut.artist WHERE email_akun = %s
+            """, [user_email])
+            artist_id = cursor.fetchone()
+
+            if songwriter_id:
+                query_str = """
+                SELECT DISTINCT a.id, a.judul, l.nama AS label, a.jumlah_lagu, a.total_durasi
+                FROM marmut.album a
+                LEFT JOIN marmut.label l ON a.id_label = l.id
+                JOIN marmut.song s ON a.id = s.id_album
+                JOIN marmut.songwriter_write_song sws ON s.id_konten = sws.id_song
+                WHERE sws.id_songwriter = %s
+                """
+                cursor.execute(query_str, [songwriter_id[0]])
+            elif artist_id:
+                query_str = """
+                SELECT DISTINCT a.id, a.judul, l.nama AS label, a.jumlah_lagu, a.total_durasi
+                FROM marmut.album a
+                LEFT JOIN marmut.label l ON a.id_label = l.id
+                JOIN marmut.song s ON a.id = s.id_album
+                WHERE s.id_artist = %s
+                """
+                cursor.execute(query_str, [artist_id[0]])
+            else:
+                albums = []
+
+            albums = cursor.fetchall()
+            # Convert album IDs to strings
+            albums = [{'id': str(album[0]), 'judul': album[1], 'label': album[2], 
+                       'jumlah_lagu': album[3], 'total_durasi': album[4]} 
+                      for album in albums]
+
+    except Exception as e:
+        return HttpResponseServerError(f"An error occurred: {e}")
+
+    return render(request, 'list_album.html', {'albums': albums})
