@@ -83,7 +83,7 @@ def label_list_album(request):
             return HttpResponseServerError(f"An error occurred: {e}")
 
         # Render the template with the fetched data
-        return render(request, 'list_album.html', {'albums': albums})
+        return render(request, 'label_list_album.html', {'albums': albums})
     else:
         # Redirect to some error page or login page if the user is not a label
         return redirect("/login/")  # Adjust the URL as needed
