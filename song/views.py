@@ -311,7 +311,7 @@ def create_song(request, album_id):
         query(insert_konten_query)
 
         print(f"ini insert into song:")
-        print(f"artis name:{artist_name}")
+        # print(f"artis name:{artist_name}")
         print(f"artis id:{artist_id}")
         print(f"konten id:{id_konten}")
         print(f"album id:{album_id}")
@@ -353,26 +353,39 @@ def create_song(request, album_id):
     return render(request, "create_song.html", context)
 
 
+
 def delete_song(request, song_id):
     try:
-        # Define the DELETE query
-        delete_query = f"DELETE FROM SONG WHERE id_konten = '{song_id}';"
+        # Define the DELETE query for SONG table
+        delete_query_song = f"DELETE FROM SONG WHERE id_konten = '{song_id}';"
         
+        # Define the DELETE query for KONTEN table
+        delete_query_konten = f"DELETE FROM KONTEN WHERE id = '{song_id}';"
+        
+        # Retrieve the album ID before deleting the song
         album_id_query = f"SELECT id_album FROM SONG WHERE id_konten = '{song_id}';"
         album_id_result = query(album_id_query)
         album_id = album_id_result[0][0]  # Accessing the first element of the first tuple in the result
-        print(f"albumid:{album_id}")
 
+        # Execute the DELETE query for SONG table
+        result_song = query(delete_query_song)
 
-        # Execute the DELETE query
-        result = query(delete_query)
-
-        if isinstance(result, Exception):
-            print("Error while deleting song:", result)
+        if isinstance(result_song, Exception):
+            print("Error while deleting song from SONG table:", result_song)
         else:
-            print("Song deleted successfully!")
+            print("Song deleted successfully from SONG table!")
+            
+        # Execute the DELETE query for KONTEN table
+        result_konten = query(delete_query_konten)
+
+        if isinstance(result_konten, Exception):
+            print("Error while deleting song from KONTEN table:", result_konten)
+        else:
+            print("Song deleted successfully from KONTEN table!")
+            
     except Exception as e:
         print("Error:", e)
+    
     return redirect('song:list_songs', album_id)
 
 def delete_album(request, album_id):
@@ -441,30 +454,36 @@ def royalty(request):
         # if request.session['is_songwriter'] == True:
         if 'is_songwriter' in request.session and request.session['is_songwriter']:
             query_str = f"""
-            SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
+            SELECT
+                k.judul AS judul_lagu,
+                a.judul AS judul_album,
+                s.total_play,
+                s.total_download,
                 r.jumlah AS total_royalti
-            FROM song s
-            LEFT JOIN album a ON s.id_album = a.id
-            LEFT JOIN konten k ON s.id_konten = k.id
-            LEFT JOIN royalti r ON s.id_konten = r.id_song
-            WHERE s.id_konten IN (
-                SELECT id_song FROM songwriter_write_song WHERE id_songwriter = (
-                SELECT id FROM songwriter WHERE email_akun = '{user_email}'
-                )
-            )
+            FROM
+                ROYALTI r
+            JOIN
+                SONG s ON r.id_song = s.id_konten
+            JOIN
+                KONTEN k ON s.id_konten = k.id
+            JOIN
+                SONGWRITER sw ON s.id_konten = sw.id
+            JOIN
+                ALBUM a ON s.id_album = a.id
+            WHERE
+                sw.email_akun = '{user_email}';
+
             """
         # elif request.session['is_artist'] == True:
         elif 'is_artist' in request.session and request.session['is_artist']:
             query_str = f"""
-            SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, 
-                r.jumlah AS total_royalti
-            FROM song s
-            LEFT JOIN album a ON s.id_album = a.id
-            LEFT JOIN konten k ON s.id_konten = k.id
-            LEFT JOIN royalti r ON s.id_konten = r.id_song
-            WHERE s.id_artist IN (
-                SELECT id FROM artist WHERE email_akun = '{user_email}'
-            )
+            SELECT k.judul AS judul_lagu, a.judul AS judul_album, s.total_play, s.total_download, r.jumlah AS total_royalti
+            FROM ROYALTI r
+            JOIN SONG s ON r.id_song = s.id_konten
+            JOIN KONTEN k ON s.id_konten = k.id
+            JOIN ARTIST artist ON s.id_artist = artist.id
+            JOIN ALBUM a ON s.id_album = a.id
+            WHERE artist.email_akun = '{user_email}';
             """
     try:
         royalties = query(query_str)
