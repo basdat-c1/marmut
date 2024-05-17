@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+    <div class="main-content" style="background-color: #f2f2f2; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;">
+        <div class="container" style="text-align: center;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h1 style="margin-bottom: 20px; color: #333;">Register</h1>
+            <a href="{% url 'main:pengguna_form' %}" class="btn" style="display: block;
+                padding: 10px 20px;
+                background-color: #333;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;">Pengguna</a>
+            <a href="{% url 'main:label_form' %}" class="btn" style="display: block;
+                padding: 10px 20px;
+                background-color: #333;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+                margin-top: 10px;">Label</a>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,94 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Create Song</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #808080;
+    }
+    h2 {
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+    input[type="submit"] {
+        background-color: #808080;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 12px 20px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    input[type="submit"]:hover {
+        background-color: #888;
+    }
+</style>
+{% endblock meta %}
+
+{% block content %}
+<div class="container">
+    <h2>Create Lagu</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="judul">Judul:</label>
+            <input type="text" id="judul" name="judul" required>
+        </div>
+        <div class="form-group">
+            <label for="artist">Artist:</label>
+            <input type="text" id="artist" name="artist" value="{{ user.nama }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="songwriter">Songwriter:</label>
+            <select id="songwriter" name="songwriter" multiple required>
+                {% for songwriter in songwriters %}
+                <option value="{{ songwriter.id }}">{{ songwriter.nama }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="genre">Genre:</label>
+            <select id="genre" name="genre" multiple required>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+                <option value="jazz">Jazz</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="durasi">Durasi:</label>
+            <input type="text" id="durasi" name="durasi" required>
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock content %}
