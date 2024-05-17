@@ -82,9 +82,6 @@ def get_roles(email):
     user = query(f"SELECT * FROM SONGWRITER WHERE email_akun = '{email}'")
     if user:
         roles.append("songwriter")
-    # user = query(f"SELECT * FROM LABEL WHERE email = '{email}'")
-    # if user:
-    #     roles.append("label")
     return roles
 
 def check_is_premium(email):
