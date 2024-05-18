@@ -3,10 +3,11 @@ from song.views import *
 app_name = 'song'
 
 urlpatterns = [
-    path('play/', play_song, name='play_song'),
-    path('add-to-playlist/', add_song_to_playlist, name='add_song_to_playlist'),
-    path('add-to-playlist-success/', add_song_to_playlist_success, name='add_song_to_playlist_success'),
-    path('download/', download_song, name='download_song'),
+    path('play/<uuid:id>/', play_song, name='play_song'),
+    path('play/<uuid:id>/increment-play/', increment_play, name='increment_play'),
+    path('play/<uuid:id>/add-to-playlist/', add_song_to_playlist, name='add_song_to_playlist'),
+    path('play/<uuid:id>/add-to-playlist-post/<uuid:id_playlist>/', add_song_to_playlist_post, name='add_song_to_playlist_post'),
+    path('play/<uuid:id>/download-post/', download_song_post, name='download_song_post'),
     path('create_album/', create_album, name='create_album'),
     path('list_album/', list_album, name='list_album'),
     path('list_songs/<uuid:album_id>/', list_songs, name='list_songs'),

@@ -7,19 +7,23 @@
 <div>
     <h1 class="text-center mb-3">User Playlist Details</h1> 
 
-    <p class="fs-5 mb-0"><b>Judul: </b>Playlist1</p>
-    <p class="fs-5 mb-0"><b>Pembuat: </b>Pembuat1</p>
-    <p class="fs-5 mb-0"><b>Jumlah Lagu: </b>12</p>
-    <p class="fs-5 mb-0"><b>Total Durasi: </b>8 jam 20 menit</p>
-    <p class="fs-5 mb-0"><b>Tanggal Dibuat: </b>18/03/24</p>
-    <p class="fs-5 mb-0"><b>Deskripsi: </b>Lorem ipsum ...</p>
+    <p class="fs-5 mb-0"><b>Judul: </b>{{playlist.judul}}</p>
+    <p class="fs-5 mb-0"><b>Pembuat: </b>{{pembuat}}</p>
+    <p class="fs-5 mb-0"><b>Jumlah Lagu: </b>{{playlist.jumlah_lagu}}</p>
+    <p class="fs-5 mb-0"><b>Total Durasi: </b>{{durasi_playlist}}</p>
+    <p class="fs-5 mb-0"><b>Tanggal Dibuat: </b>{{playlist.tanggal_dibuat}}</p>
+    <p class="fs-5 mb-0"><b>Deskripsi: </b>{{playlist.deskripsi}}</p>
+
+    <br>
 
     <div class="text-center">
         <div class="justify-content-center mb-3">
-            <a href="">
+            <a href="shuffle-play/">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Shuffle Play</button>
             </a>
-            <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button>
+            <a href="../../">
+            <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
+            </a>
         </div>
     </div>
 
@@ -36,44 +40,24 @@
             </tr>
         </thead>
         <tbody>
+            {% for l in list_lagu %}
             <tr>
-                <td scope="row">gold rush</td>
-                <td>Taylor Swift</td>
-                <td>3 menit 5 detik</td>
+                <td scope="row">{{ l.0 }}</td>
+                <td>{{ l.1 }}</td>
+                <td>{{ l.2 }}</td>
                 <td>
-                    <a href="../../song/play/">
+                    <a href="../../../song/play/{{ l.3 }}/">
                         <button type="button" class="btn btn-secondary btn-block mx-1">Lihat</button>
                     </a>
-                    <a href="../../song/play/">
+                    <a href="play-stay/{{ l.3 }}/">
                         <button type="button" class="btn btn-secondary btn-block mx-1">Play</button>
                     </a>
-                    <a href="delete-song/">
+                    <a href="delete-song/{{ l.3 }}/">
                         <button type="button" class="btn btn-secondary btn-block mx-1">Hapus</button>
                     </a>
                 </td>
             </tr>
-            <tr>
-                <td scope="row">The Great War</td>
-                <td>Taylor Swift</td>
-                <td>3 menit 10 detik</td>
-                <td>
-                    <a href="../../song/play/">
-                        <button type="button" class="btn btn-secondary btn-block mx-1">Lihat</button>
-                    </a>
-                    <a href="../../song/play/">
-                        <button type="button" class="btn btn-secondary btn-block mx-1">Play</button>
-                    </a>
-                    <a href="delete-song/">
-                        <button type="button" class="btn btn-secondary btn-block mx-1">Hapus</button>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td scope="row">...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
+            {% endfor %}
             <tr>
                 <td scope="row" colspan="4">
                     <a href="add-song/">

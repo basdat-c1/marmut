@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.db import connection
 from utils.decorator import custom_login_required
 from utils.query import query
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, JsonResponse
 from uuid import UUID
 from django.shortcuts import render, redirect
 from django.http import HttpResponseServerError
@@ -19,21 +19,145 @@ import uuid
 from django.utils import timezone
 
 
-def play_song(request):
+def play_song(request, id):
+    lagu = query(
+        f"""
+        SELECT
+            K.judul,
+            string_agg(DISTINCT g.genre, ', ') AS genres,
+            string_agg(DISTINCT a.email_akun, ',') AS artists,
+            string_agg(DISTINCT sw.email_akun, ', ') AS songwriters,
+            K.durasi,
+            to_char(K.tanggal_rilis, 'DD/MM/YY') AS tanggal_rilis,
+            K.tahun AS tahun,
+            S.total_play,
+            S.total_download,
+            ALBUM.judul AS nama_album
+        FROM
+            KONTEN K
+            JOIN SONG S ON K.id = S.id_konten
+            LEFT JOIN GENRE G ON K.id = G.id_konten
+            LEFT JOIN ARTIST A ON S.id_artist = A.id
+            LEFT JOIN SONGWRITER_WRITE_SONG SWS ON S.id_konten = SWS.id_song
+            LEFT JOIN SONGWRITER SW ON sws.id_songwriter = SW.id
+            LEFT JOIN ALBUM ON S.id_album = ALBUM.id
+        WHERE
+            K.id = '{id}'
+        GROUP BY
+            K.judul, K.durasi, K.tanggal_rilis, K.tahun, S.total_play, S.total_download, ALBUM.judul;
+        """)[0]
+
+    email_artist = lagu[2]
+    artist = query(f"select akun.nama from akun where akun.email = '{email_artist}';")[0][0]
+
+    genres = lagu[1]
+    songwriters = lagu[3]
+    print(genres)
+    print(songwriters)
+    if genres:
+        genres = [genre.strip() for genre in genres.split(',')]
+    if songwriters:
+        songwriters = [songwriter.strip() for songwriter in songwriters.split(',')]
+    
+    is_premium = False
+    email = request.session["email"]
+    user = query(f"SELECT * FROM PREMIUM WHERE email = '{email}'")
+    if user:
+        is_premium = True
+
     context = {}
+    context["artist"] = artist
+    context["lagu"] = lagu
+    context["genres"] = genres
+    context["songwriters"] = songwriters
+    context["is_premium"] = is_premium
     return render(request, "play_song.html", context)
 
-def add_song_to_playlist(request):
+def increment_play(request, id):
+    query(
+        f"""
+        UPDATE SONG
+        SET total_play = total_play + 1
+        WHERE id_konten = '{id}';   
+        """
+        )
+    return JsonResponse({'message': 'Play count updated!'})
+
+def add_song_to_playlist(request, id):
+    lagu = query(
+        f"""
+        SELECT
+            K.judul,
+            string_agg(DISTINCT g.genre, ', ') AS genres,
+            string_agg(DISTINCT a.email_akun, ',') AS artists,
+            string_agg(DISTINCT sw.email_akun, ', ') AS songwriters,
+            K.durasi,
+            to_char(K.tanggal_rilis, 'DD/MM/YY') AS tanggal_rilis,
+            K.tahun AS tahun,
+            S.total_play,
+            S.total_download,
+            ALBUM.judul AS nama_album
+        FROM
+            KONTEN K
+            JOIN SONG S ON K.id = S.id_konten
+            LEFT JOIN GENRE G ON K.id = G.id_konten
+            LEFT JOIN ARTIST A ON S.id_artist = A.id
+            LEFT JOIN SONGWRITER_WRITE_SONG SWS ON S.id_konten = SWS.id_song
+            LEFT JOIN SONGWRITER SW ON sws.id_songwriter = SW.id
+            LEFT JOIN ALBUM ON S.id_album = ALBUM.id
+        WHERE
+            K.id = '{id}'
+        GROUP BY
+            K.judul, K.durasi, K.tanggal_rilis, K.tahun, S.total_play, S.total_download, ALBUM.judul;
+        """)[0]
+
+    email_artist = lagu[2]
+    artist = query(f"select akun.nama from akun where akun.email = '{email_artist}';")[0][0]
+
+    data_playlist = query(
+        f"""
+        SELECT UP.judul, UP.deskripsi, UP.jumlah_lagu, UP.tanggal_dibuat as tanggal_rilis, UP.total_durasi, UP.id_user_playlist, UP.id_playlist
+        FROM USER_PLAYLIST UP
+        WHERE UP.email_pembuat = '{request.session["email"]}';
+        """)
+
     context = {}
+    context["lagu"] = lagu[0]
+    context["artist"] = artist
+    context["data_playlist"] = data_playlist
+    
     return render(request, "add_song_to_playlist.html", context)
 
-def add_song_to_playlist_success(request):
+def add_song_to_playlist_post(request, id, id_playlist):
     context = {}
-    return render(request, "add_song_to_playlist_success.html", context)
+    id_lagu = id
+    judul_lagu = query(f"""select konten.judul from song, konten 
+                    where song.id_konten = konten.id and song.id_konten = '{id_lagu}';""")
+    judul_playlist = query(f"""select up.judul from user_playlist up
+                    where up.id_playlist = '{id_playlist}';""")
+    context["judul_lagu"] = judul_lagu[0][0]
+    context["judul_playlist"] = judul_playlist[0][0]
+    result = query(f"""INSERT INTO playlist_song (id_playlist, id_song) VALUES ('{id_playlist}', '{id_lagu}');""")
+    if isinstance(result, Exception):
+        return render(request, "add_song_to_playlist_failed.html", context)
+    else:
+        return render(request, "add_song_to_playlist_success.html", context)
 
-def download_song(request):
-    context = {}
-    return render(request, "download_song.html", context)
+# def add_song_to_playlist_failed(request, id_lagu, id_playlist):
+#     context = {}
+#     return render(request, "add_song_to_playlist_failed.html", context)
+
+def download_song_post(request, id):
+    id_lagu = id
+    judul_lagu = query(f"""select konten.judul from song, konten 
+                where song.id_konten = konten.id and song.id_konten = '{id_lagu}';""")[0][0]
+    context = { "judul" : judul_lagu }
+    result = query(f"INSERT INTO downloaded_song VALUES ('{id_lagu}', '{request.session['email']}');")
+    if isinstance(result, Exception):
+        return render(request, "download_song_failed.html", context)
+    else:
+        query(f"UPDATE song SET total_download = total_download + 1 WHERE id_konten = '{id_lagu}';")
+        return render(request, "download_song_success.html", context)
 
 
 

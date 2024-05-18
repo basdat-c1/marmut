@@ -9,63 +9,59 @@
 
     <br>
 
-    <!-- if user is label -->
-        <p class="fs-5 mb-1"><b>Nama: </b>Nambo Inc</p>
-        <p class="fs-5 mb-1"><b>Email: </b>namborinambo@gmail.com</p>
-        <p class="fs-5 mb-1"><b>Kontak: </b>081426381923</p>
-    <!-- else -->
-        <!-- <p class="fs-5 mb-1"><b>Nama: </b>Budi Budi</p>
-        <p class="fs-5 mb-1"><b>Email: </b>budibudi@gmail.com</p>
-        <p class="fs-5 mb-1"><b>Kota asal: </b>Nambo</p>
-        <p class="fs-5 mb-1"><b>Gender: </b>Laki-laki</p>
-        <p class="fs-5 mb-1"><b>Tempat lahir: </b>Nambo</p>
-        <p class="fs-5 mb-1"><b>Tanggal lahir: </b>1 Januari 2004</p>
-        <p class="fs-5 mb-1"><b>Role(s): </b>Artist/Songwriter, Podcaster</p> -->
-    <!-- end if -->
+    <p class="fs-5 mb-1"><b>Nama: </b>{{ nama }}</p>
+    <p class="fs-5 mb-1"><b>Email: </b>{{ email }}</p>
+
+    {% if request.session.is_label %}
+        <p class="fs-5 mb-1"><b>Kontak: </b>{{ kontak }}</p>
+    {% else %}
+        <p class="fs-5 mb-1"><b>Kota asal: </b>{{ kota_asal }}</p>
+        <p class="fs-5 mb-1"><b>Gender: </b>{{ gender }}</p>
+        <p class="fs-5 mb-1"><b>Tempat lahir: </b>{{ tempat_lahir }}</p>
+        <p class="fs-5 mb-1"><b>Tanggal lahir: </b>{{ tanggal_lahir }}</p>
+        <p class="fs-5 mb-1"><b>Role(s): </b>{{ roles }}</p>
+    {% endif %}
 
     <br>
 
-    <!-- if user is label -->
-
-        
+    {% if request.session.is_label %}
         <p class="fs-5 mb-0"><b>Daftar Album:</b></p>
-        <table id="tabel_album" class="table table-bordered text-center">
-            <thead>
-                <tr>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Label</th>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
-                    <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for album in data_album %}
-                <tr>
-                    <td scope="row">{{forloop.counter}}</td>
-                    <td>{{album.judul}}</td>
-                    <td>{{album.nama_label}}</td>
-                    <td>{{album.jumlah_lagu}}</td>
-                    <td>{{album.total_durasi}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
+        {% if has_album %}
+            <table id="tabel_album" class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Label</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
+                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for album in data_album %}
+                    <tr>
+                        <td scope="row">{{forloop.counter}}</td>
+                        <td>{{album.judul}}</td>
+                        <td>{{album.nama_label}}</td>
+                        <td>{{album.jumlah_lagu}}</td>
+                        <td>{{album.total_durasi}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}  
+            <p class="fs-5 mb-0"><b>Belum Memproduksi Album</b></p>
+        {% endif %}
         <br>
     
-
-    <!-- else -->
-        <!-- if user is pengguna biasa -->
-
-
-            <p class="fs-5 mb-0"><b>Daftar Playlist:</b></p>
+    {% else %}
+        <p class="fs-5 mb-0"><b>Daftar Playlist:</b></p>
+        {% if has_playlist %}
             <table id="tabel_playlist" class="table table-bordered text-center">
                 <thead>
                     <tr>
                         <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
                         <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
-                        <th scope="col" style="background-color: hsl(195, 5%, 84%);">User</th>
                         <th scope="col" style="background-color: hsl(195, 5%, 84%);">Jumlah Lagu</th>
                         <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Durasi</th>
                         <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
@@ -73,34 +69,31 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for playlist in data_playlist %}
                     <tr>
-                        <td scope="row">1</td>
-                        <td>Disney Songs</td>
-                        <td>Budi Budi</td>
-                        <td>15</td>
-                        <td>1 jam 5 menit</td>
-                        <td>1 Januari 2022</td>
-                        <td>Song from disney movies</td>
+                        <td scope="row">{{forloop.counter}}</td>
+                        <td>{{playlist.judul}}</td>
+                        <td>{{playlist.jumlah_lagu}}</td>
+                        <td>{{playlist.total_durasi}}</td>
+                        <td>{{playlist.tanggal_rilis}}</td>
+                        <td>{{playlist.deskripsi}}</td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+        {% else %}  
+            <p class="fs-5 mb-0"><b>Belum Memiliki Playlist</b></p>
+        {% endif %}
+        <br>
 
-            <br>
-
-
-        <!-- else -->
-            <!-- if user is songwriter or user is artist -->
-
-
+        {% if request.session.is_songwriter or request.session.is_artist %}
+            {% if has_lagu %}
                 <p class="fs-5 mb-0"><b>Daftar Lagu:</b></p>
                 <table id="tabel_lagu" class="table table-bordered text-center">
                     <thead>
                         <tr>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">No.</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Genre(s)</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Artis</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Songwriter(s)</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Total Play</th>
@@ -112,9 +105,6 @@
                         <tr>
                             <td scope="row">{{forloop.counter}}</td>
                             <td>{{lagu.judul}}</td>
-                            <td>{{lagu.genre}}</td>
-                            <td>{{lagu.artist}}</td>
-                            <td>{{lagu.songwriter}}</td>
                             <td>{{lagu.durasi}}</td>
                             <td>{{lagu.tanggal_rilis}}</td>
                             <td>{{lagu.total_play}}</td>
@@ -123,15 +113,14 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            {% else %}  
+                <p class="fs-5 mb-0"><b>Belum Memiliki Lagu</b></p>
+            {% endif %}
+            <br>
+        {% endif %}
 
-                <br>
-
-
-            <!-- end if -->
-
-            <!-- if user is podcaster -->
-
-
+        {% if request.session.is_podcaster %}
+            {% if has_podcast %}
                 <p class="fs-5 mb-0"><b>Daftar Podcast:</b></p>
                 <table id="tabel_podcast" class="table table-bordered text-center">
                     <thead>
@@ -140,27 +129,26 @@
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Judul</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Tanggal Rilis</th>
                             <th scope="col" style="background-color: hsl(195, 5%, 84%);">Durasi</th>
-                            <th scope="col" style="background-color: hsl(195, 5%, 84%);">Podcaster</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for podcast in data_podcast %}
                         <tr>
-                            <td scope="row">1</td>
-                            <td>Malam Minggu</td>
-                            <td>1 Januari 2023</td>
-                            <td>50 menit</td>
-                            <td>Budi Budi</td>
+                            <td scope="row">{{forloop.counter}}</td>
+                            <td>{{podcast.judul}}</td>
+                            <td>{{podcast.tanggal_rilis}}</td>
+                            <td>{{podcast.durasi}}</td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
+            {% else %}  
+                <p class="fs-5 mb-0"><b>Belum Memiliki Podcast</b></p>
+            {% endif %}
+            <br>
 
-                <br>
-
-
-            <!-- end if -->
-        <!-- end if -->
-     <!-- end if -->
-
+        {% endif %}
+    {% endif %}
 </div>
 
 {% endblock content %}
