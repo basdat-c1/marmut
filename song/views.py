@@ -133,10 +133,11 @@ def add_song_to_playlist_post(request, id, id_playlist):
     id_lagu = id
     judul_lagu = query(f"""select konten.judul from song, konten 
                     where song.id_konten = konten.id and song.id_konten = '{id_lagu}';""")
-    judul_playlist = query(f"""select up.judul from user_playlist up
+    judul_playlist = query(f"""select up.judul, up.id_user_playlist from user_playlist up
                     where up.id_playlist = '{id_playlist}';""")
     context["judul_lagu"] = judul_lagu[0][0]
     context["judul_playlist"] = judul_playlist[0][0]
+    context["id_user_playlist"] = judul_playlist[0][1]
     result = query(f"""INSERT INTO playlist_song (id_playlist, id_song) VALUES ('{id_playlist}', '{id_lagu}');""")
     if isinstance(result, Exception):
         return render(request, "add_song_to_playlist_failed.html", context)
