@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Download Lagu{% endblock title %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-4">Download Song Failed!</h1> 
+
+    <div class="text-center mb-4">
+        <p class="fs-5 mb-0"><b>Lagu dengan judul '{{judul}}' sudah pernah diunduh!</b></p>
+    </div>
+
+    <div class="text-center">
+        <div class="justify-content-center mb-3">
+            <a href="">
+                <!-- pergi ke daftar lagu yang sudah di download -->
+                <button type="button" class="btn btn-secondary btn-block mx-1">Ke Daftar Download</button>
+            </a>
+            <a href="../">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

@@ -15,12 +15,17 @@
         {% endfor %}
     </ul>
     <p class="fs-5 mb-0"><b>Artist: </b>{{artist}}</p>
-    <p class="fs-5 mb-0"><b>Songwriter(s):</b></p>
-    <ul class="mb-0">
-        {% for songwriter in songwriters %}
-            <li class="fs-5 mb-0">{{songwriter}}</li>
-        {% endfor %}
-    </ul>
+    <p class="fs-5 mb-0"><b>Songwriter(s):</b>
+    {% if songwriters %}
+        </p>
+        <ul class="mb-0">
+            {% for songwriter in songwriters %}
+                <li class="fs-5 mb-0">{{songwriter}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        -</p>
+    {% endif %}
     <p class="fs-5 mb-0"><b>Durasi: </b>{{lagu.durasi}}</p>
     <p class="fs-5 mb-0"><b>Tanggal Rilis: </b>{{lagu.tanggal_rilis}}</p>
     <p class="fs-5 mb-0"><b>Tahun: </b>{{lagu.tahun}}</p>
@@ -42,9 +47,11 @@
             <a href="add-to-playlist/">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Add to Playlist</button>
             </a>
-            <a href="download/">
+            {% if is_premium %}
+            <a href="download-post/">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Download</button>
             </a>
+            {% endif %}
             <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button>
         </div>
     </div>

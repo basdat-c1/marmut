@@ -52,14 +52,25 @@ def play_song(request, id):
 
     genres = lagu[1]
     songwriters = lagu[3]
-    genres = [genre.strip() for genre in genres.split(',')]
-    songwriters = [songwriter.strip() for songwriter in songwriters.split(',')]
+    print(genres)
+    print(songwriters)
+    if genres:
+        genres = [genre.strip() for genre in genres.split(',')]
+    if songwriters:
+        songwriters = [songwriter.strip() for songwriter in songwriters.split(',')]
     
+    is_premium = False
+    email = request.session["email"]
+    user = query(f"SELECT * FROM PREMIUM WHERE email = '{email}'")
+    if user:
+        is_premium = True
+
     context = {}
     context["artist"] = artist
     context["lagu"] = lagu
     context["genres"] = genres
-    context["songwriters"] = genres
+    context["songwriters"] = songwriters
+    context["is_premium"] = is_premium
     return render(request, "play_song.html", context)
 
 def increment_play(request, id):
@@ -105,17 +116,10 @@ def add_song_to_playlist(request, id):
 
     data_playlist = query(
         f"""
-        SELECT UP.judul, UP.deskripsi, UP.jumlah_lagu, UP.tanggal_dibuat as tanggal_rilis, UP.total_durasi, UP.id_user_playlist
+        SELECT UP.judul, UP.deskripsi, UP.jumlah_lagu, UP.tanggal_dibuat as tanggal_rilis, UP.total_durasi, UP.id_user_playlist, UP.id_playlist
         FROM USER_PLAYLIST UP
         WHERE UP.email_pembuat = '{request.session["email"]}';
         """)
-    data_playlist = query(
-        f"""
-        SELECT UP.judul, UP.deskripsi, UP.jumlah_lagu, UP.tanggal_dibuat as tanggal_rilis, UP.total_durasi, UP.id_user_playlist
-        FROM USER_PLAYLIST UP;
-        """)
-    
-    query(f"""insert into playlist_song values ({...}, '{id}');""")
 
     context = {}
     context["lagu"] = lagu[0]
@@ -124,19 +128,36 @@ def add_song_to_playlist(request, id):
     
     return render(request, "add_song_to_playlist.html", context)
 
-def form_add_song_to_playlist(request, id):
-    if request.method == "POST":
-        
-        ...
-
-def add_song_to_playlist_success(request, id):
-
+def add_song_to_playlist_post(request, id, id_playlist):
     context = {}
-    return render(request, "add_song_to_playlist_success.html", context)
+    id_lagu = id
+    judul_lagu = query(f"""select konten.judul from song, konten 
+                    where song.id_konten = konten.id and song.id_konten = '{id_lagu}';""")
+    judul_playlist = query(f"""select up.judul from user_playlist up
+                    where up.id_playlist = '{id_playlist}';""")
+    context["judul_lagu"] = judul_lagu[0][0]
+    context["judul_playlist"] = judul_playlist[0][0]
+    result = query(f"""INSERT INTO playlist_song (id_playlist, id_song) VALUES ('{id_playlist}', '{id_lagu}');""")
+    if isinstance(result, Exception):
+        return render(request, "add_song_to_playlist_failed.html", context)
+    else:
+        return render(request, "add_song_to_playlist_success.html", context)
 
-def download_song(request, id):
-    context = {}
-    return render(request, "download_song.html", context)
+# def add_song_to_playlist_failed(request, id_lagu, id_playlist):
+#     context = {}
+#     return render(request, "add_song_to_playlist_failed.html", context)
+
+def download_song_post(request, id):
+    id_lagu = id
+    judul_lagu = query(f"""select konten.judul from song, konten 
+                where song.id_konten = konten.id and song.id_konten = '{id_lagu}';""")[0][0]
+    context = { "judul" : judul_lagu }
+    result = query(f"INSERT INTO downloaded_song VALUES ('{id_lagu}', '{request.session['email']}');")
+    if isinstance(result, Exception):
+        return render(request, "download_song_failed.html", context)
+    else:
+        query(f"UPDATE song SET total_download = total_download + 1 WHERE id_konten = '{id_lagu}';")
+        return render(request, "download_song_success.html", context)
 
 def create_album(request):
     return render(request, 'create_album.html')

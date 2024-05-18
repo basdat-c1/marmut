@@ -5,19 +5,18 @@
 {% block content %}
 
 <div>
-    <h1 class="text-center mb-4">Add Song to User Playlist Success!</h1> 
+    <h1 class="text-center mb-4">Add Song to User Playlist Failed!</h1> 
 
     <div class="text-center mb-4">
-        <p class="fs-5 mb-0"><b>Berhasil menambahkan Lagu dengan judul '{{judul_lagu}}' ke '{{judul_playlist}}'!</b></p>
+        <p class="fs-5 mb-0"><b>Lagu dengan judul '{{judul_lagu}}' sudah ditambahkan di '{{judul_playlist}}'!</b></p>
     </div>
 
     <div class="text-center">
         <div class="justify-content-center mb-3">
-            <a href="../../playlist/detail/">
-                <!-- pergi ke playlist 1 -->
+            <a href="../../">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Ke Playlist</button>
             </a>
-            <a href="../../">
+            <a href="../">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
             </a>
         </div>
