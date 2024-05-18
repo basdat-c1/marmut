@@ -1,4 +1,4 @@
--- Triggers untuk Fitur Hijau
+-- Trigger untuk Fitur Hijau
 
 -- 1. Memperbarui Atribut Durasi dan Jumlah Lagu:
 CREATE OR REPLACE FUNCTION update_durasi_dan_jumlah_lagu() 

@@ -1,4 +1,6 @@
--- trigger update podcast
+-- Trigger untuk Fitur Merah
+
+-- 1. trigger update podcast
 CREATE OR REPLACE FUNCTION update_podcast_duration()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -21,7 +23,7 @@ AFTER INSERT OR DELETE ON EPISODE
 FOR EACH ROW
 EXECUTE FUNCTION update_podcast_duration();
 
--- trigger update album
+-- 2. trigger update album
 CREATE OR REPLACE FUNCTION update_album_details()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -45,47 +47,3 @@ CREATE TRIGGER update_album_details_trigger
 AFTER INSERT OR DELETE ON SONG
 FOR EACH ROW
 EXECUTE FUNCTION update_album_details();
-
--- trigger cek email akun
-CREATE OR REPLACE FUNCTION check_email_akun()
-    RETURNS TRIGGER AS
-$$
-DECLARE
-    jumlah_email INT;
-BEGIN
-    jumlah_email = (SELECT COUNT(*) FROM MARMUT.AKUN WHERE LOWER(email) = LOWER(new.email));
-    IF (jumlah_email > 0) THEN
-        RAISE EXCEPTION 'Email %s sudah terdaftar, silahkan masukan email yang belum terdaftar', new.email;
-    END IF;
-    RETURN new;
-END
-$$
-    LANGUAGE plpgsql;
-
-CREATE TRIGGER check_email_akun_trigger
-    BEFORE INSERT OR UPDATE OF email
-    ON akun
-    FOR EACH ROW
-EXECUTE PROCEDURE check_email_akun();
-
--- trigger cek email label
-CREATE OR REPLACE FUNCTION check_email_label()
-    RETURNS TRIGGER AS
-$$
-DECLARE
-    jumlah_email INT;
-BEGIN
-    jumlah_email = (SELECT COUNT(*) FROM MARMUT.LABEL WHERE LOWER(email) = LOWER(new.email));
-    IF (jumlah_email > 0) THEN
-        RAISE EXCEPTION 'Email %s sudah terdaftar, silahkan masukan email yang belum terdaftar', new.email;
-    END IF;
-    RETURN new;
-END
-$$
-    LANGUAGE plpgsql;
-
-CREATE TRIGGER check_email_label_trigger
-    BEFORE INSERT OR UPDATE OF email
-    ON LABEL
-    FOR EACH ROW
-EXECUTE PROCEDURE check_email_label();
