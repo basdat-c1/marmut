@@ -27,7 +27,7 @@ Chart Details
                 <td>{{ song.tanggal_rilis|date:"d-m-Y" }}</td>
                 <td>{{ song.total_plays }}</td>
                 <td class="text-center">
-                    <a href="" class="btn btn-secondary">See Song</a>
+                    <a href="{% url 'song:play_song' song.id %}" class="btn btn-secondary">See Song</a>
                 </td>
             </tr>
             {% endfor %}
