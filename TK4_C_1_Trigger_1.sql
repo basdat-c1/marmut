@@ -1,5 +1,7 @@
 -- Trigger untuk Fitur Wajib
 
+set search_path to marmut;
+
 -- 1.1 trigger cek email akun
 CREATE OR REPLACE FUNCTION check_email_akun()
     RETURNS TRIGGER AS
@@ -48,13 +50,13 @@ EXECUTE PROCEDURE check_email_label();
 CREATE OR REPLACE FUNCTION set_pengguna_baru_sebagai_nonpremium()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO NONPREMIUM (email) VALUES (NEW.email);
+    INSERT INTO marmut.NONPREMIUM VALUES (NEW.email);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER set_pengguna_baru_sebagai_nonpremium_trigger
-    AFTER INSERT ON AKUN
+    AFTER INSERT ON marmut.AKUN
     FOR EACH ROW
 EXECUTE FUNCTION set_pengguna_baru_sebagai_nonpremium();
 

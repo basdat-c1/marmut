@@ -104,6 +104,7 @@ def login_page(request):
 def login_register_page(request):
     return render(request, 'login_register.html', {})
 
+@csrf_exempt
 @custom_login_required
 def show_dashboard(request):
     if 'email' not in request.session:
