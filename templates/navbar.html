@@ -8,7 +8,7 @@
         
         {% if request.session.email %}
           <li class="nav-item active">
-            <a class="nav-link" href="">Dashboard</a>
+            <a class="nav-link" href="{% url 'main:show_dashboard' %}">Dashboard</a>
           </li>
           {% if request.session.is_label %}
             <li class="nav-item">
@@ -19,10 +19,10 @@
             </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="">Chart</a>
+            <a class="nav-link" href="{% url 'chart:chart_list' %}">Chart</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">Kelola Playlist</a>
+            <a class="nav-link" href="{% url 'playlist:manage_playlist' %}">Kelola Playlist</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="">Langganan Paket</a>
@@ -33,7 +33,7 @@
             {% endif %}
             {% if request.session.is_podcaster %}
               <li class="nav-item">
-                <a class="nav-link" href="">Kelola Podcast</a>
+                <a class="nav-link" href="{% url 'podcast:manage_podcast' %}">Kelola Podcast</a>
               </li>
             {% endif %}
             {% if request.session.is_artist or request.session.is_songwriter %}

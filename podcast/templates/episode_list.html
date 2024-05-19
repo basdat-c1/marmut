@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Daftar Episode Podcast 1</h2>
+    <h2 class="mb-4">Daftar Episode Podcast {{ judul }}</h2>
     <table class="table">
         <thead class="table-dark">
             <tr>
@@ -21,9 +21,12 @@
                 <td>{{ episode.judul }}</td>
                 <td>{{ episode.deskripsi }}</td>
                 <td>{{ episode.durasi }}</td>
-                <td>{{ episode.tanggal | date:"Y-m-d" }}</td>
+                <td>{{ episode.tanggal_rilis | date:"d-m-Y" }}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
+                    <form method="post" action="{% url 'podcast:delete_episode' episode.id_episode %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}

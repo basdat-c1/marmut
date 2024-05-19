@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Podcast{% endblock %}
+{% block title %}Update Podcast{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Create New Podcast</h2>
+    <h2>Update Podcast</h2>
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
@@ -22,7 +22,8 @@
                 <div class="text-danger">{{ form.genre.errors }}</div>
             {% endif %}
         </div>
-        <button type="submit" class="btn btn-secondary">Submit</button>
+        <button type="submit" class="btn btn-secondary">Update</button>
+        <a href="{% url 'podcast:manage_podcast' %}" class="btn btn-danger">Cancel</a>
     </form>
 </div>
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Podcast List</h2>
-    <a class="btn btn-secondary" href="{% url 'main:create_podcast' %}">Create Podcast</a>
+    <a class="btn btn-secondary" href="{% url 'podcast:create_podcast' %}">Create Podcast</a>
     <table class="table my-3">
         <thead class="table-dark">
             <tr>
@@ -16,15 +16,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for podcast in podcasts %}
+            {% for podcast, jumlah_episode in podcasts %}
             <tr>
                 <td>{{ podcast.judul }}</td>
-                <td>{{ podcast.jumlah_episode }}</td>
-                <td>{{ podcast.total_durasi }}</td>
+                <td>{{ jumlah_episode }}</td>
+                <td>{{ podcast.durasi }}</td>
                 <td>
-                    <a href="#" class="btn btn-dark">Lihat Episode</a>
-                    <a href="#" class="btn btn-secondary">Tambah Episode</a>
-                    <a href="#" class="btn btn-danger">Hapus</a>
+                    <a href="{% url 'podcast:episode_list' podcast.id %}" class="btn btn-dark">Lihat Episode</a>
+                    <a href="{% url 'podcast:create_episode' podcast.id %}" class="btn btn-secondary">Tambah Episode</a>
+                    <a href="{% url 'podcast:update_podcast' podcast.id %}" class="btn btn-secondary">Edit Podcast</a>
+                    <form method="post" action="{% url 'podcast:delete_podcast' podcast.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}

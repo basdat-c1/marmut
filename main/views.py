@@ -14,6 +14,9 @@ def login(request):
         user = query(f"SELECT * FROM AKUN WHERE email = '{email}' AND password = '{password}'")
         if user:
             print("Saya user")
+
+            res = query(f"CALL check_and_update_subscription_status('{email}')")
+            print(res)
             is_podcaster = False
             is_artist = False
             is_songwriter = False
@@ -23,6 +26,7 @@ def login(request):
 
             request.session["email"] = email
             request.session["password"] = password
+            
             
             
             is_podcaster = "podcaster" in roles
