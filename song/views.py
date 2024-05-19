@@ -228,6 +228,7 @@ def label_list_album(request):
 def label_list_song(request):
     return render(request, 'label_list_song.html')
 
+@csrf_exempt
 @custom_login_required
 def create_album(request):
     # # nama = request.user.nama
@@ -333,7 +334,7 @@ def create_album(request):
     }
     return render(request, 'create_album.html', context)
 
-
+@csrf_exempt
 @custom_login_required
 def create_song(request, album_id):
     nama_album = request.GET.get('nama_album')  # Get album name from query parameters

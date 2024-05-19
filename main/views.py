@@ -267,7 +267,6 @@ def pengguna_form(request):
                     )
                     
                     if is_podcaster:
-                        # Insert into PODCASTER table
                         cursor.execute(
                             """
                             INSERT INTO marmut.PODCASTER (email) 
@@ -276,7 +275,6 @@ def pengguna_form(request):
                         )
 
                     if is_artist:
-                        # Insert into ARTIST table
                         cursor.execute(
                             """
                             INSERT INTO marmut.ARTIST (id, email_akun) 
@@ -285,7 +283,6 @@ def pengguna_form(request):
                         )
 
                     if is_songwriter:
-                        # Insert into SONGWRITER table
                         cursor.execute(
                             """
                             INSERT INTO marmut.SONGWRITER (id, email_akun) 
