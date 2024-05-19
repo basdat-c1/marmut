@@ -4,19 +4,20 @@
 CREATE OR REPLACE FUNCTION update_podcast_duration()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
+    IF TG_OP = 'INSERT' OR TG_OP = 'DELETE' THEN
         UPDATE KONTEN
-        SET durasi = (SELECT SUM(durasi) FROM EPISODE WHERE id_konten_podcast = NEW.id_konten_podcast)
-        WHERE id = NEW.id_konten_podcast;
-    ELSIF TG_OP = 'DELETE' THEN
-        UPDATE KONTEN
-        SET durasi = (SELECT SUM(durasi) FROM EPISODE WHERE id_konten_podcast = OLD.id_konten_podcast)
-        WHERE id = OLD.id_konten_podcast;
+        SET durasi = COALESCE((SELECT SUM(durasi) FROM EPISODE WHERE id_konten_podcast = COALESCE(NEW.id_konten_podcast, OLD.id_konten_podcast)), 0)
+        WHERE id = COALESCE(NEW.id_konten_podcast, OLD.id_konten_podcast);
     END IF;
 
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_podcast_duration_trigger
+AFTER INSERT OR DELETE ON EPISODE
+FOR EACH ROW
+EXECUTE FUNCTION update_podcast_duration();
 
 CREATE TRIGGER update_podcast_duration_trigger
 AFTER INSERT OR DELETE ON EPISODE
