@@ -10,5 +10,6 @@ urlpatterns = [
     path('manage/episode/create/<podcast_id>', create_episode, name="create_episode"),
     path('update/<podcast_id>', update_podcast, name="update_podcast"),
     path('delete/<podcast_id>', delete_podcast, name="delete_podcast"),
-    path('manage/episode/delete/<episode_id>', delete_episode, name="delete_episode")
+    path('manage/episode/delete/<episode_id>', delete_episode, name="delete_episode"),
+    path('manage/episode/updaate/<episode_id>', update_episode, name="update_episode")
 ]
