@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-cx^b)tlc9&std%)7i^d-atsepid*^^@i1=i-(o3l1qu$mbh(^3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1", "https://marmut.adaptable.app/", "https://marmut-dev.adaptable.app/"]
 
 
 # Application definition
