@@ -23,6 +23,9 @@ def login(request):
                 nama = None
             print(nama)
             print("Saya user")
+
+            res = query(f"CALL check_and_update_subscription_status('{email}')")
+            print(res)
             is_podcaster = False
             is_artist = False
             is_songwriter = False
@@ -33,6 +36,8 @@ def login(request):
             request.session["email"] = email
             request.session["nama"] =  nama
             request.session["password"] = password
+            
+            
             
             is_podcaster = "podcaster" in roles
             is_artist = "artist" in roles

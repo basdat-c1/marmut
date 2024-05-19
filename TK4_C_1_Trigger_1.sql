@@ -57,3 +57,21 @@ CREATE TRIGGER set_pengguna_baru_sebagai_nonpremium_trigger
     AFTER INSERT ON AKUN
     FOR EACH ROW
 EXECUTE FUNCTION set_pengguna_baru_sebagai_nonpremium();
+
+-- Procedur untuk check dan update status premium pengguna
+CREATE OR REPLACE PROCEDURE check_and_update_subscription_status(email_akun VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM premium p
+        JOIN TRANSACTION t ON t.email = p.email
+        WHERE p.email = email_akun
+        AND t.timestamp_berakhir < current_timestamp
+    ) THEN
+        DELETE FROM premium WHERE email = email_akun;
+        INSERT INTO nonpremium (email) VALUES (email_akun) ON CONFLICT (email) DO NOTHING;
+    END IF;
+END;
+$$;

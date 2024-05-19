@@ -6,17 +6,17 @@
 
 
 <div class="container mt-4">
-    <p><b>Judul: </b>The Thinker</p>
-    <p><b>Genre(s): </b>Filsuf</p>
-    <p><b>Podcaster: </b>Deddy Corbuzier</p>
-    <p><b>Total Durasi: </b>15 Jam 30 menit</p>
-    <p><b>Tanggal Rilis: </b>03/03/24</p>
-    <p><b>Tahun: </b>2024</p>
+    <p><b>Judul: </b>{{ podcast.judul }}</p>
+    <p><b>Genre(s): </b>{{ podcast.genre }}</p>
+    <p><b>Podcaster: </b>{{ nama_podcaster }}</p>
+    <p><b>Total Durasi: </b>{{ podcast.durasi }}</p>
+    <p><b>Tanggal Rilis: </b>{{ podcast.tanggal_rilis|date:"Y-m-d" }}</p>
+    <p><b>Tahun: </b>{{ podcast.tahun }}</p>
     <button class="btn btn-secondary" onclick="goBack()">Kembali</button>
     <table class="table table-hover">
         <thead class="table-dark">
             <tr>
-                <th colspan="4" style="text-align: center;">Daftar Podcast</th>
+                <th colspan="4" style="text-align: center;">Daftar Episode</th>
             </tr>
             <tr>
                 <th scope="col">Judul Episode</th>
@@ -26,12 +26,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for podcast in podcasts %}
+            {% for episode in episodes %}
             <tr>
-                <td>{{ podcast.judul }}</td>
-                <td>{{ podcast.deskripsi }}</td>
-                <td>{{ podcast.durasi }}</td>
-                <td>{{ podcast.tanggal|date:"Y-m-d" }}</td>
+                <td>{{ episode.judul }}</td>
+                <td>{{ episode.deskripsi }}</td>
+                <td>{{ episode.durasi }}</td>
+                <td>{{ episode.tanggal_rilis|date:"d-m-Y" }}</td>
             </tr>
             {% endfor %}
         </tbody>
