@@ -1,11 +1,19 @@
 from datetime import datetime
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from utils.query import query
 from utils.decorator import custom_login_required
 import uuid
 from podcast.forms import PodcastForm, EpisodeForm
 def play_podcast(request, podcast_id):
+    try:
+        uuid_obj = uuid.UUID(podcast_id, version=4)
+    except ValueError:
+        return HttpResponseBadRequest("Invalid podcast ID format.")
     podcast = query(f"SELECT * FROM PODCAST WHERE id_konten = '{podcast_id}'")
+    print(podcast)
+    if not podcast:
+        return redirect("main:show_dashboard")
     nama_podcaster = query(f"SELECT nama FROM AKUN WHERE email = '{podcast[0][1]}'")[0][0]
     konten = query(f"SELECT * FROM KONTEN WHERE id = '{podcast[0][0]}'")
     episodes_query = query(f"SELECT * FROM EPISODE WHERE id_konten_podcast = '{podcast_id}'")
