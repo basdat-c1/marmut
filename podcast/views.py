@@ -3,6 +3,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from utils.query import query
 from utils.decorator import custom_login_required
+from django.views.decorators.csrf import csrf_exempt
 import uuid
 from podcast.forms import PodcastForm, EpisodeForm
 def play_podcast(request, podcast_id):
@@ -77,6 +78,7 @@ def manage_podcasts(request):
     }
     return render(request, 'manage_podcasts.html', context)
 
+@csrf_exempt
 @custom_login_required
 def create_podcast(request):
     genres = query("SELECT DISTINCT genre FROM genre")
@@ -115,6 +117,7 @@ def create_podcast(request):
     else:
         form = PodcastForm()
     return render(request, 'create_podcast.html', {'form':form})
+@csrf_exempt
 @custom_login_required
 def episode_list(request, podcast_id):
     email = query(f"SELECT email_podcaster FROM podcast WHERE id_konten = '{podcast_id}'")
@@ -128,6 +131,7 @@ def episode_list(request, podcast_id):
         episodes[i] = episode._replace(durasi=formatted_duration)
     return render(request, 'episode_list.html', {'episodes': episodes, 'judul':judul})
 
+@csrf_exempt
 @custom_login_required
 def create_episode(request, podcast_id):
     podcast = query(f"SELECT * FROM konten WHERE id = '{podcast_id}'")
@@ -162,6 +166,7 @@ def format_duration(minute):
     jam, menit = divmod(minute, 60)
     return f"{jam} Jam {menit} menit"
 
+@csrf_exempt
 @custom_login_required
 def update_podcast(request, podcast_id):
     podcast_details = query(f"SELECT * FROM KONTEN WHERE id = '{podcast_id}'")
@@ -204,6 +209,8 @@ def update_podcast(request, podcast_id):
 
     return render(request, 'update_podcast.html', {'form': form})
 
+@csrf_exempt
+@custom_login_required
 def delete_podcast(request, podcast_id):
     #auth
     email = query(f"SELECT email_podcaster FROM podcast WHERE id_konten = '{podcast_id}'")
@@ -216,6 +223,8 @@ def delete_podcast(request, podcast_id):
     
     manage_podcasts(request)
 
+@csrf_exempt
+@custom_login_required
 def delete_episode(request, episode_id):
     user_email = request.session["email"]
     episode = query(f"SELECT * FROM episode where id_episode = '{episode_id}'")
@@ -229,6 +238,7 @@ def delete_episode(request, episode_id):
         return redirect('podcast:episode_list', podcast_id = episode[0].id_konten_podcast)
     episode_list(request)
 
+@csrf_exempt
 @custom_login_required
 def update_episode(request, episode_id):
     episode = query(f"SELECT * FROM episode WHERE id_episode = '{episode_id}'")
