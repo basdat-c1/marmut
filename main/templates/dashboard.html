@@ -15,6 +15,7 @@
     {% if request.session.is_label %}
         <p class="fs-5 mb-1"><b>Kontak: </b>{{ kontak }}</p>
     {% else %}
+        <p class="fs-5 mb-1"><b>Status langganan: </b>{{ status_langganan }}</p>
         <p class="fs-5 mb-1"><b>Kota asal: </b>{{ kota_asal }}</p>
         <p class="fs-5 mb-1"><b>Gender: </b>{{ gender }}</p>
         <p class="fs-5 mb-1"><b>Tempat lahir: </b>{{ tempat_lahir }}</p>
@@ -87,8 +88,8 @@
         <br>
 
         {% if request.session.is_songwriter or request.session.is_artist %}
+            <p class="fs-5 mb-0"><b>Daftar Lagu:</b></p>
             {% if has_lagu %}
-                <p class="fs-5 mb-0"><b>Daftar Lagu:</b></p>
                 <table id="tabel_lagu" class="table table-bordered text-center">
                     <thead>
                         <tr>
@@ -120,8 +121,8 @@
         {% endif %}
 
         {% if request.session.is_podcaster %}
+            <p class="fs-5 mb-0"><b>Daftar Podcast:</b></p>
             {% if has_podcast %}
-                <p class="fs-5 mb-0"><b>Daftar Podcast:</b></p>
                 <table id="tabel_podcast" class="table table-bordered text-center">
                     <thead>
                         <tr>
