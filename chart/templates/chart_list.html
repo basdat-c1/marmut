@@ -17,20 +17,30 @@ Chart List
             </tr>
         </thead>
         <tbody>
+            {% for chart in charts %}
             <tr>
-                <td>Daily Top 20</td>
-                <td><a href="{% url 'main:chart_detail' %}" class="btn btn-secondary">View Chart</a></td>
+                <td>{{ chart.tipe }}</td>
+                <td>
+                    {% if chart.tipe == "Daily Top 20" %}
+                        <a href="{% url 'chart:chart_detail' 'daily' %}" class="btn btn-secondary">View Chart</a>
+                    {% elif chart.tipe == "Weekly Top 20" %}
+                        <a href="{% url 'chart:chart_detail' 'weekly' %}" class="btn btn-secondary">View Chart</a>
+                    {% elif chart.tipe == "Monthly Top 20" %}
+                        <a href="{% url 'chart:chart_detail' 'monthly' %}" class="btn btn-secondary">View Chart</a>
+                    {% elif chart.tipe == "Yearly Top 20" %}
+                        <a href="{% url 'chart:chart_detail' 'yearly' %}" class="btn btn-secondary">View Chart</a>
+                {% endif %}
+                </td>
             </tr>
-            <tr>
-                <td>Weekly Top 20</td>
-                <td><a href="{% url 'main:chart_detail' %}" class="btn btn-secondary">View Chart</a></td>
-            </tr>
-            <tr>
-                <td>Monthly Top 20</td>
-                <td><a href="{% url 'main:chart_detail' %}" class="btn btn-secondary">View Chart</a></td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
     <button class="btn btn-secondary" onclick="goBack()">Kembali</button>
 </div>
+
+<script>
+function goBack() {
+    window.history.back();
+}
+</script>
 {% endblock %}

@@ -11,6 +11,8 @@ from django.db import IntegrityError, transaction, connection, InternalError
 # from .forms import RegisterForm
 @csrf_exempt
 def login(request):
+    if "email" in request.session:
+        return redirect("main:show_dashboard")
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -23,6 +25,9 @@ def login(request):
                 nama = None
             print(nama)
             print("Saya user")
+
+            res = query(f"CALL check_and_update_subscription_status('{email}')")
+            print(res)
             is_podcaster = False
             is_artist = False
             is_songwriter = False
@@ -33,6 +38,8 @@ def login(request):
             request.session["email"] = email
             request.session["nama"] =  nama
             request.session["password"] = password
+            
+            
             
             is_podcaster = "podcaster" in roles
             is_artist = "artist" in roles
@@ -208,6 +215,8 @@ def show_dashboard(request):
     return render(request, "dashboard.html", context)
 
 def register(request):
+    if "email" in request.session:
+        return redirect("main:show_dashboard")
     return render(request, 'register.html')
 
 
@@ -223,6 +232,8 @@ def generate_unique_uuid():
 
 
 def pengguna_form(request):
+    if "email" in request.session:
+        return redirect("main:show_dashboard")
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -259,6 +270,8 @@ def pengguna_form(request):
 
 
 def label_form(request):
+    if "email" in request.session:
+        return redirect("main:show_dashboard")
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')

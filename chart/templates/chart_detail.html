@@ -7,7 +7,7 @@ Chart Details
 {% block content %}
 <div class="container mt-5">
     <h2 style="text-align: center;">Chart Details</h2>
-    <p><b>Tipe: </b>Daily Top 20</p>
+    <p><b>Tipe: </b>{{ tipe }}</p>
     <button class="btn btn-secondary" onclick="goBack()">Kembali</button>
     <table class="table">
         <thead class="table-dark">
@@ -24,10 +24,10 @@ Chart Details
             <tr>
                 <td>{{ song.judul }}</td>
                 <td>{{ song.artist }}</td>
-                <td>{{ song.tanggal_rilis|date:"Y-m-d" }}</td>
+                <td>{{ song.tanggal_rilis|date:"d-m-Y" }}</td>
                 <td>{{ song.total_plays }}</td>
                 <td class="text-center">
-                    <a href="" class="btn btn-secondary">See Song</a>
+                    <a href="{% url 'song:play_song' song.id %}" class="btn btn-secondary">See Song</a>
                 </td>
             </tr>
             {% endfor %}

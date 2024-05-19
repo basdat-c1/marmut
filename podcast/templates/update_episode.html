@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Add New Episode{% endblock %}
+{% block title %}Update Episode{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Tambah Episode {{ podcast.judul }}</h2>
+    <h2 class="mb-4">Update Episode</h2>
 
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Podcast Title: {{ podcast.judul }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Total Episodes: {{ jumlah_episode }}</h6>
-            <p class="card-text">Total Duration: {{ podcast.durasi }} menit</p>
+            <h5 class="card-title">Podcast Title: {{ episode.judul }}</h5>
         </div>
     </div>
 
@@ -37,7 +35,7 @@
                 <div class="text-danger">{{ form.durasi.errors }}</div>
             {% endif %}
         </div>
-        <button type="submit" class="btn btn-secondary">Submit</button>
+        <button type="submit" class="btn btn-secondary">Update</button>
     </form>
 </div>
 {% endblock %}
