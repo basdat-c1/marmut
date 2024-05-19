@@ -28,8 +28,17 @@ def manage_playlist(request):
         has_playlist = False
         if data_playlist:
             has_playlist = True
+        
+        list_playlist = [0]*len(data_playlist)
+        for i,row in enumerate(data_playlist):
+            durasi = row[4]
+            if durasi < 60: durasi_playlist = f"{durasi} menit"
+            else: durasi_playlist = f"{durasi // 60} jam {durasi % 60} menit"
+            list_playlist[i] = (row[0], row[2], durasi_playlist, row[6])
+        
         context["has_playlist"] = has_playlist
         context["data_playlist"] = data_playlist
+        context["list_playlist"] = list_playlist
         return render(request, "manage_playlist.html", context)
     
     return HttpResponseRedirect(reverse("main:login"))
