@@ -231,7 +231,7 @@ def generate_unique_uuid():
             if result[0] == 0:  
                 return new_uuid
 
-
+@csrf_exempt
 def pengguna_form(request):
     if "email" in request.session:
         return redirect("main:show_dashboard")
@@ -302,7 +302,7 @@ def pengguna_form(request):
     
     return render(request, 'pengguna_form.html')
 
-
+@csrf_exempt
 def label_form(request):
     if "email" in request.session:
         return redirect("main:show_dashboard")
