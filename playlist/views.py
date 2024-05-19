@@ -2,16 +2,19 @@ from uuid import uuid4
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from utils.decorator import custom_login_required
 from utils.query import query
 
+@csrf_exempt
 @custom_login_required
 def play_playlist(request):
     if not request.session["is_label"]:
         context = {}
         return render(request, "play_playlist.html", context)
 
+@csrf_exempt
 @custom_login_required
 def manage_playlist(request):
     if not request.session["is_label"]:
@@ -31,11 +34,13 @@ def manage_playlist(request):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def create_playlist(request):
     if not request.session["is_label"]:
         return render(request, "create_playlist.html")
 
+@csrf_exempt
 @custom_login_required
 def create_playlist_post(request):
     if not request.session["is_label"]:
@@ -50,6 +55,7 @@ def create_playlist_post(request):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def playlist_detail(request, id):
     if not request.session["is_label"]:
@@ -94,6 +100,7 @@ def playlist_detail(request, id):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def playlist_add_song(request, id):
     if not request.session["is_label"]:
@@ -111,6 +118,7 @@ def playlist_add_song(request, id):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def playlist_add_song_post(request, id, id_lagu):
     if not request.session["is_label"]:
@@ -138,6 +146,7 @@ def playlist_add_song_post(request, id, id_lagu):
         
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required 
 def playlist_delete_song_post(request, id, id_lagu):
     if not request.session["is_label"]:
@@ -155,6 +164,7 @@ def playlist_delete_song_post(request, id, id_lagu):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def edit_playlist(request, id):
     if not request.session["is_label"]:
@@ -169,6 +179,7 @@ def edit_playlist(request, id):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def delete_playlist(request, id):
     if not request.session["is_label"]:
@@ -190,6 +201,7 @@ def delete_playlist(request, id):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def playlist_shuffle_play_post(request, id):
     if not request.session["is_label"]:
@@ -224,10 +236,12 @@ def playlist_shuffle_play_post(request, id):
                 '{id_lagu}',
                 '{current_timestamp}');
                 """))
+            query(f"UPDATE song SET total_play = total_play + 1 WHERE id_konten = '{id_lagu}';")
         return HttpResponseRedirect("../")
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def play_stay_playlist_post(request, id, id_lagu):
     if not request.session["is_label"]:

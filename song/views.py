@@ -14,6 +14,7 @@ import uuid
 from django.utils import timezone
 from django.shortcuts import render, redirect
 
+@csrf_exempt
 @custom_login_required
 def play_song(request, id):
     if not request.session["is_label"]:
@@ -72,20 +73,16 @@ def play_song(request, id):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def increment_play(request, id):
     if not request.session["is_label"]:
-        query(
-            f"""
-            UPDATE SONG
-            SET total_play = total_play + 1
-            WHERE id_konten = '{id}';   
-            """
-            )
+        query(f"UPDATE song SET total_play = total_play + 1 WHERE id_konten = '{id}';")
         return JsonResponse({'message': 'Play count updated!'})
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def add_song_to_playlist(request, id):
     if not request.session["is_label"]:
@@ -135,6 +132,7 @@ def add_song_to_playlist(request, id):
     
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def add_song_to_playlist_post(request, id, id_playlist):
     if not request.session["is_label"]:
@@ -155,6 +153,7 @@ def add_song_to_playlist_post(request, id, id_playlist):
         
     return HttpResponseRedirect(reverse("main:login"))
 
+@csrf_exempt
 @custom_login_required
 def download_song_post(request, id):
     if not request.session["is_label"]:
