@@ -49,6 +49,13 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'main:logout' %}">Log out</a>
         </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:register' %}">Sign Up</a>
+          </li>
       {% endif %}
     </ul>
     {% if request.session.email and not request.session.is_label %}
