@@ -135,6 +135,11 @@ def create_episode(request, podcast_id):
     if not podcast or request.session["email"] != email[0][0]:
         return redirect("")
     print(podcast)
+    episode_count = query(f"SELECT count(*) from episode where id_konten_podcast = '{podcast_id}' GROUP BY id_konten_podcast")
+    if not episode_count:
+        episode_count = 0
+    else:
+        episode_count = episode_count[0][0]
     if request.method == 'POST' and request.session["is_podcaster"]:
         form = EpisodeForm(request.POST)
         if form.is_valid():
@@ -149,7 +154,7 @@ def create_episode(request, podcast_id):
             return redirect('podcast:episode_list', podcast_id=podcast_id)
     else:
         form = EpisodeForm()
-    return render(request, 'create_episode.html', {'form':form, 'podcast': podcast})
+    return render(request, 'create_episode.html', {'form':form, 'podcast': podcast[0], 'jumlah_episode':episode_count})
 
 def format_duration(minute):
     if minute < 60:
