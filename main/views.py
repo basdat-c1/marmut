@@ -246,10 +246,6 @@ def pengguna_form(request):
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
                         """, [email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal]
                     )
-                    cursor.execute(
-                        "INSERT INTO marmut.NONPREMIUM (email) VALUES (%s);",
-                        [email]
-                    )
             return redirect('/login')
         except InternalError as e:
             if 'marmut.check_email_akun' in str(e):

@@ -43,3 +43,17 @@ CREATE TRIGGER check_email_label_trigger
     ON LABEL
     FOR EACH ROW
 EXECUTE PROCEDURE check_email_label();
+
+-- 2. trigger pendaftaran pengguna baru ditetapkan sebagai non-premium
+CREATE OR REPLACE FUNCTION set_pengguna_baru_sebagai_nonpremium()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO NONPREMIUM (email) VALUES (NEW.email);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_pengguna_baru_sebagai_nonpremium_trigger
+    AFTER INSERT ON AKUN
+    FOR EACH ROW
+EXECUTE FUNCTION set_pengguna_baru_sebagai_nonpremium();
