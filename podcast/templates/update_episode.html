@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Episode{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Update Episode</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Podcast Title: {{ episode.judul }}</h5>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.judul.id_for_label }}" class="form-label">{{ form.judul.label }}</label>
+            {{ form.judul }}
+            {% if form.judul.errors %}
+                <div class="text-danger">{{ form.judul.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.deskripsi.id_for_label }}" class="form-label">{{ form.deskripsi.label }}</label>
+            {{ form.deskripsi }}
+            {% if form.deskripsi.errors %}
+                <div class="text-danger">{{ form.deskripsi.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.durasi.id_for_label }}" class="form-label">{{ form.durasi.label }}</label>
+            {{ form.durasi }}
+            {% if form.durasi.errors %}
+                <div class="text-danger">{{ form.durasi.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-secondary">Update</button>
+    </form>
+</div>
+{% endblock %}

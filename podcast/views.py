@@ -70,7 +70,7 @@ def manage_podcasts(request):
     return render(request, 'manage_podcasts.html', context)
 
 @custom_login_required
-def create_podcast(request): # kurang auths
+def create_podcast(request):
     genres = query("SELECT DISTINCT genre FROM genre")
     genre_choices = [(genre[0], genre[0]) for genre in genres]
     PodcastForm.base_fields["genre"].choices = genre_choices
@@ -215,3 +215,36 @@ def delete_episode(request, episode_id):
 
         return redirect('podcast:episode_list', podcast_id = episode[0].id_konten_podcast)
     episode_list(request)
+
+@custom_login_required
+def update_episode(request, episode_id):
+    episode = query(f"SELECT * FROM episode WHERE id_episode = '{episode_id}'")
+    if not episode:
+        return redirect("main:show_dashboard")
+    
+    podcast_id = episode[0][1] 
+    email = query(f"SELECT email_podcaster FROM podcast WHERE id_konten = '{podcast_id}'")
+    if request.session["email"] != email[0][0]:
+        return redirect("main:show_dashboard")
+
+    if request.method == 'POST' and request.session["is_podcaster"]:
+        form = EpisodeForm(request.POST)
+        if form.is_valid():
+            judul = form.cleaned_data['judul']
+            deskripsi = form.cleaned_data['deskripsi']
+            new_durasi = form.cleaned_data['durasi']
+
+            old_durasi = episode[0][4] 
+            durasi_diff = new_durasi - old_durasi
+            res = query(f"UPDATE episode SET judul = '{judul}', deskripsi = '{deskripsi}', durasi = '{new_durasi}' WHERE id_episode = '{episode_id}'")
+            print(res)
+            res = query(f"UPDATE konten SET durasi = durasi + {durasi_diff} WHERE id = '{podcast_id}'")
+            print(res)
+            return redirect('podcast:episode_list', podcast_id=podcast_id)
+    else:
+        form = EpisodeForm(initial={
+            'judul': episode[0][2], 
+            'deskripsi': episode[0][3], 
+            'durasi': episode[0][4]  
+        })
+    return render(request, 'update_episode.html', {'form': form, 'episode': episode[0]})
