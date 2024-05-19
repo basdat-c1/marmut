@@ -245,9 +245,17 @@ def pengguna_form(request):
         tanggal_lahir = request.POST.get('tanggal_lahir')
         kota_asal = request.POST.get('kota_asal')
         roles = request.POST.getlist('role')
+        print(roles)
+        
+        
         
         is_verified = bool(roles)
         role = ', '.join(roles) if roles else 'Pengguna Biasa'
+        is_podcaster = 'Podcaster' in roles
+        is_artist = 'Artist' in roles
+        is_songwriter = 'Songwriter' in roles
+
+        user_id = uuid.uuid4()
 
         try:
             with transaction.atomic():
@@ -258,6 +266,31 @@ def pengguna_form(request):
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
                         """, [email, password, nama, gender, tempat_lahir, tanggal_lahir, is_verified, kota_asal]
                     )
+                    
+                    if is_podcaster:
+                        cursor.execute(
+                            """
+                            INSERT INTO marmut.PODCASTER (email) 
+                            VALUES (%s);
+                            """, [email]
+                        )
+
+                    if is_artist:
+                        cursor.execute(
+                            """
+                            INSERT INTO marmut.ARTIST (id, email_akun) 
+                            VALUES (%s, %s);
+                            """, [user_id, email]
+                        )
+
+                    if is_songwriter:
+                        cursor.execute(
+                            """
+                            INSERT INTO marmut.SONGWRITER (id, email_akun) 
+                            VALUES (%s, %s);
+                            """, [user_id, email]
+                        )
+                        
             return redirect('/login')
         except InternalError as e:
             if 'marmut.check_email_akun' in str(e):

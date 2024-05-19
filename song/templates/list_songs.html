@@ -76,6 +76,7 @@
                 </tr>
             </thead>
             <tbody>
+            {% if songs %}
                 {% for song in songs %}
                 <tr>
                     <td>{{ song.judul }}</td>
@@ -83,11 +84,16 @@
                     <td>{{ song.total_play }}</td>
                     <td>{{ song.total_download }}</td>
                     <td class="action-btns">
-                        <a href="#">Lihat Detail</a>
+                        <a href="{% url 'song:play_song' song.id %}">Lihat Detail</a>
                         <a href="{% url 'song:delete_song' song.id %}">Hapus</a>
                     </td>
                 </tr>
                 {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="no-data">Data lagu belum ada.</td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
     </div>

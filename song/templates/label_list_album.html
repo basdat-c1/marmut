@@ -75,6 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                {% if albums %}
                     {% for album in albums %}
                     <tr>
                         <td>{{ album.judul }}</td>
@@ -86,6 +87,11 @@
                         </td>
                     </tr>
                     {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="no-data">Data lagu belum ada.</td>
+                    </tr>
+                {% endif %}
                 </tbody>
             </table>
         </div>
