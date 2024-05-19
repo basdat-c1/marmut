@@ -192,7 +192,6 @@ def list_songs(request, album_id):
     return render(request, 'list_songs.html', {'songs': songs})
 
 
-from django.contrib.auth.decorators import login_required
 
 @custom_login_required
 def label_list_album(request):
