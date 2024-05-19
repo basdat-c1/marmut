@@ -3,19 +3,19 @@
 {% block content %}
 
 <div>
-    <h1 class="text-center mb-4">Tambah Playlist</h1> 
+    <h1 class="text-center mb-4">Edit Playlist</h1> 
 
     <div class="d-flex justify-content-center">
-        <form method="POST" action="../">
+        <form method="POST" action="#">
             {% csrf_token %}
             <table class="mb-3">
                 <tr>
                     <td style="width: 75px;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbspJudul: </td>
-                    <td><input type="text" name="judul" placeholder="Judul" class="form-control" style="width: 400px;"></td>
+                    <td><input type="text" id="judul" name="judul" placeholder="Judul" class="form-control" style="width: 400px;"></td>
                 </tr>
                 <tr>
                     <td style="width: 75px;">Deskripsi: </td>
-                    <td><input type="text" name="deskripsi" placeholder="Deskripsi" class="form-control" style="width: 400px;"></td>
+                    <td><input type="text" id="deskripsi" name="deskripsi" placeholder="Deskripsi" class="form-control" style="width: 400px;"></td>
                 </tr>
             </table>
             <div class="text-center">

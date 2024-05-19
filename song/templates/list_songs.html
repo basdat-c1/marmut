@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>List Songs</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #808080;
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #808080;
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2;
+        }
+
+        .action-btns a {
+            text-decoration: none;
+            color: #808080;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #666;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+        .action-btns a:hover {
+            background-color: #808080;
+            color: #fff;
+        }
+    </style>
+{% endblock meta %}
+{% block content %}
+    <div class="container">
+        <h2>Daftar Lagu</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Judul</th>
+                    <th>Durasi</th>
+                    <th>Total Play</th>
+                    <th>Total Download</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in songs %}
+                <tr>
+                    <td>{{ song.judul }}</td>
+                    <td>{{ song.durasi }}</td>
+                    <td>{{ song.total_play }}</td>
+                    <td>{{ song.total_download }}</td>
+                    <td class="action-btns">
+                        <a href="#">Lihat Detail</a>
+                        <a href="{% url 'song:delete_song' song.id %}">Hapus</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

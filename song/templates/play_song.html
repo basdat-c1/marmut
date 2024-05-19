@@ -7,46 +7,86 @@
 <div>
     <h1 class="text-center mb-3">Song Details</h1> 
 
-    <p class="fs-5 mb-0"><b>Judul: </b>Song1</p>
+    <p class="fs-5 mb-0"><b>Judul: </b>{{lagu.judul}}</p>
     <p class="fs-5 mb-0"><b>Genre(s):</b></p>
     <ul class="mb-0">
-        <li class="fs-5 mb-0">Genre 1</li>
-        <li class="fs-5 mb-0">Genre 2</li>
+        {% for genre in genres %}
+            <li class="fs-5 mb-0">{{genre}}</li>
+        {% endfor %}
     </ul>
-    <p class="fs-5 mb-0"><b>Artist: </b>Artist1</p>
-    <p class="fs-5 mb-0"><b>Songwriter(s):</b></p>
-    <ul class="mb-0">
-        <li class="fs-5 mb-0">Songwriter1</li>
-        <li class="fs-5 mb-0">Songwriter2</li>
-    </ul>
-    <p class="fs-5 mb-0"><b>Durasi: </b>3 menit</p>
-    <p class="fs-5 mb-0"><b>Tanggal Rilis: </b>18/03/24</p>
-    <p class="fs-5 mb-0"><b>Tahun: </b>2024</p>
-    <p class="fs-5 mb-0"><b>Total Play: </b>0</p>
-    <p class="fs-5 mb-0"><b>Total Downloads: </b>0</p>
-    <p class="fs-5 mb-0"><b>Album: </b>Album1</p>
+    <p class="fs-5 mb-0"><b>Artist: </b>{{artist}}</p>
+    <p class="fs-5 mb-0"><b>Songwriter(s):</b>
+    {% if songwriters %}
+        </p>
+        <ul class="mb-0">
+            {% for songwriter in songwriters %}
+                <li class="fs-5 mb-0">{{songwriter}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        -</p>
+    {% endif %}
+    <p class="fs-5 mb-0"><b>Durasi: </b>{{lagu.durasi}}</p>
+    <p class="fs-5 mb-0"><b>Tanggal Rilis: </b>{{lagu.tanggal_rilis}}</p>
+    <p class="fs-5 mb-0"><b>Tahun: </b>{{lagu.tahun}}</p>
+    <p class="fs-5 mb-0"><b>Total Play: </b>{{lagu.total_play}}</p>
+    <p class="fs-5 mb-0"><b>Total Downloads: </b>{{lagu.total_download}}</p>
+    <p class="fs-5 mb-0"><b>Album: </b>{{lagu.nama_album}}</p>
 
     <div class="container mb-3">
         <div class="row justify-content-center">
             <div class="col-md-11 text-center">
-                <input type="range" style="width: 100%; height: 50px; margin: 0 auto;" id="customRange1" value="0">
+                <input type="range" style="width: 100%; height: 50px; margin: 0 auto;" id="progressSlider" value="0" min="0" max="100">
             </div>
         </div>
     </div>
 
     <div class="text-center">
         <div class="justify-content-center mb-3">
-            <button type="button" class="btn btn-secondary btn-block mx-1">Play</button>
-            <a href="../add-to-playlist/">
+            <button type="button" class="btn btn-secondary btn-block mx-1" id="playButton">Play</button>
+            <a href="add-to-playlist/">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Add to Playlist</button>
             </a>
-            <a href="../download/">
+            {% if is_premium %}
+            <a href="download-post/">
                 <button type="button" class="btn btn-secondary btn-block mx-1">Download</button>
             </a>
-            <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button>
+            {% endif %}
+            <a href="../../../">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
+            </a>
         </div>
     </div>
 
 </div>
+
+<script>
+    document.getElementById('playButton').addEventListener('click', function() {
+        var progress = document.getElementById('progressSlider').value;
+        if (progress > 70) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', "increment-play/", true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.message === 'Play count updated!') {
+                        location.reload();
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({
+                'progress': progress
+            }));
+        } else {
+            alert('Progress must be greater than 70% to count as a play.');
+        }
+    });
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
 {% endblock content %}

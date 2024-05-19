@@ -9,39 +9,50 @@
 
     <div class="mb-3">
         <div class="d-flex justify-content-center mb-3">
-            <form method="POST" action="../add-to-playlist-success/">
+            <form method="POST" action="#" id="add-song-form">
                 {% csrf_token %}
                 <table class="mb-3">
                     <tr>
                         <td><p class="fs-5 mb-1" style="width: 80px;"><b>&nbsp&nbsp&nbspJudul: </b></td>
-                        <td>Let It Go</td>
+                        <td>{{ lagu }}</td>
                     </tr>
-                        <td><p class="fs-5 mb-1" style="width: 80px;"><b>&nbsp&nbsp&nbspArtist: </b></td>
-                        <td>Idina Menzel</td>
                     <tr>
+                        <td><p class="fs-5 mb-1" style="width: 80px;"><b>&nbsp&nbsp&nbspArtist: </b></td>
+                        <td>{{ artist }}</td>
                     </tr>
                     <tr>
                         <td style="width: 80px;">
                             <p class="fs-5 mb-0"><b>Playlist: </b></p>
                         </td>
                         <td>
-                            <select id="playlist-dropdown" class="form-select form-select-sm" style="min-width: max-content;">
-                                <option value="playlist1">Disney Songs</option>
-                                <option value="playlist2">Playlist2</option>
-                                <option value="playlist3">Playlist3</option>
+                            <select name="playlist_dropdown" id="playlist-dropdown" class="form-select form-select-sm" style="min-width: max-content;" required>
+                                <option value="" selected disabled>Choose Playlist</option>
+                                {% for playlist in data_playlist %}
+                                    <option value="{{ playlist.id_playlist }}">{{ playlist.judul }}</option>
+                                {% endfor %}
                             </select>
                         </td>
                     </tr>
                 </table>
                 <div class="text-center">
                     <input class="btn btn-secondary btn-block mx-1" type="submit" value="Tambah" style="width: 100px;">
-                    <a href="../play/">
+                    <a href="../">
                         <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
                     </a>
-                    <!-- <button type="button" class="btn btn-secondary btn-block mx-1" onclick="goBack()">Kembali</button> -->
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('add-song-form').addEventListener('submit', function(event) {
+        var dropdown = document.getElementById('playlist-dropdown');
+        var selectedPlaylistId = dropdown.value;
+
+        var actionUrl = `../add-to-playlist-post/${selectedPlaylistId}/`;
+        this.action = actionUrl;
+    });
+</script>
+
 {% endblock content %}

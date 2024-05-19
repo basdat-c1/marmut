@@ -52,16 +52,69 @@
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-light" type="submit">Search</button>
           </form>
+  <a class="navbar-brand ps-lg-3" href="">Marmut</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      
+      {% if request.session.email %}
+        <li class="nav-item active">
+          <a class="nav-link" href="">Dashboard</a>
+        </li>
+        {% if request.session.is_label %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'song:label_list_album' %}">Kelola Album</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'song:royalty' %}">Cek Royalti</a>
+          </li>
         {% else %}
-
         <li class="nav-item">
-          <a class="nav-link" href="">Login</a>
+          <a class="nav-link" href="">Chart</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="">Sign Up</a>
+          <a class="nav-link" href="">Kelola Playlist</a>
         </li>
-          
+        <li class="nav-item">
+          <a class="nav-link" href="">Langganan Paket</a>
+          {% if request.session.is_premium %}
+          <li class="nav-item">
+            <a class="nav-link" href="">Downloaded Songs</a>
+          </li>
+          {% endif %}
+          {% if request.session.is_podcaster %}
+            <li class="nav-item">
+              <a class="nav-link" href="">Kelola Podcast</a>
+            </li>
+          {% endif %}
+          {% if request.session.is_artist or request.session.is_songwriter %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'song:list_album' %}">Kelola Album & Songs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'song:royalty' %}">Cek Royalti</a>
+            </li>
+          {% endif %}
         {% endif %}
-      </ul>
-    </div>
-  </nav>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'main:logout' %}">Log out</a>
+        </li>
+        <form class="d-flex pe-lg-3" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-light" type="submit">Search</button>
+        </form>
+      {% else %}
+
+      <li class="nav-item">
+        <a class="nav-link" href="">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="">Sign Up</a>
+      </li>
+        
+      {% endif %}
+    </ul>
+  </div>
+</nav>

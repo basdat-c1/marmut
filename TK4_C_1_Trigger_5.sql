@@ -1,0 +1,50 @@
+-- Trigger untuk Fitur Merah
+
+-- 1. trigger update podcast
+CREATE OR REPLACE FUNCTION update_podcast_duration()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' OR TG_OP = 'DELETE' THEN
+        UPDATE KONTEN
+        SET durasi = COALESCE((SELECT SUM(durasi) FROM EPISODE WHERE id_konten_podcast = COALESCE(NEW.id_konten_podcast, OLD.id_konten_podcast)), 0)
+        WHERE id = COALESCE(NEW.id_konten_podcast, OLD.id_konten_podcast);
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_podcast_duration_trigger
+AFTER INSERT OR DELETE ON EPISODE
+FOR EACH ROW
+EXECUTE FUNCTION update_podcast_duration();
+
+CREATE TRIGGER update_podcast_duration_trigger
+AFTER INSERT OR DELETE ON EPISODE
+FOR EACH ROW
+EXECUTE FUNCTION update_podcast_duration();
+
+-- 2. trigger update album
+CREATE OR REPLACE FUNCTION update_album_details()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE ALBUM
+        SET total_durasi = (SELECT COALESCE(SUM(durasi), 0) FROM SONG S JOIN KONTEN K ON S.id_konten = K.id WHERE S.id_album = NEW.id_album),
+            jumlah_lagu = (SELECT COUNT(*) FROM SONG WHERE id_album = NEW.id_album)
+        WHERE id = NEW.id_album;
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE ALBUM
+        SET total_durasi = (SELECT COALESCE(SUM(durasi), 0) FROM SONG S JOIN KONTEN K ON S.id_konten = K.id WHERE S.id_album = OLD.id_album),
+            jumlah_lagu = (SELECT COUNT(*) FROM SONG WHERE id_album = OLD.id_album)
+        WHERE id = OLD.id_album;
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_album_details_trigger
+AFTER INSERT OR DELETE ON SONG
+FOR EACH ROW
+EXECUTE FUNCTION update_album_details();

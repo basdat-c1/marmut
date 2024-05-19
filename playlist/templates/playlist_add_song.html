@@ -8,7 +8,7 @@
     <h1 class="text-center mb-5">Tambah Lagu</h1> 
 
     <div class="d-flex justify-content-center mb-3">
-        <form method="POST" action="../">
+        <form method="POST" action="#" id="add-song-form">
             {% csrf_token %}
             <table class="mb-3">
                 <tr>
@@ -16,10 +16,11 @@
                         <p class="fs-5 mb-0"><b>Lagu: </b></p>
                     </td>
                     <td>
-                        <select id="playlist-dropdown" class="form-select form-select-sm" style="min-width: max-content; margin-left: 5px;">
-                            <option value="playlist1">Backburner - NIKI</option>
-                            <option value="playlist2">Lagu2 - Artis2</option>
-                            <option value="playlist3">Lagu3 - Artis3</option>
+                        <select name="lagu_dropdown" id="lagu-dropdown" class="form-select form-select-sm" style="min-width: max-content;" required>
+                            <option value="" selected disabled>Choose Lagu</option>
+                            {% for lagu in data_lagu %}
+                                <option value="{{lagu.id}}">{{lagu.judul}} - {{lagu.artist}}</option>
+                            {% endfor %}
                         </select>
                     </td>
                 </tr>
@@ -30,5 +31,15 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById('add-song-form').addEventListener('submit', function(event) {
+        var dropdown = document.getElementById('lagu-dropdown');
+        var selectedLaguId = dropdown.value;
+
+        var actionUrl = `${selectedLaguId}/`;
+        this.action = actionUrl;
+    });
+</script>
 
 {% endblock content %}

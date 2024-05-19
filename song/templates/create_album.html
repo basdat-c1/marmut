@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Create Album</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #808080;
+            width: 80%; 
+            margin: 20px auto; 
+        }
+
+        h2 {
+            text-align: center; 
+        }
+
+        form, table {
+            width: 100%; 
+        }
+
+        input[type="text"],
+        select,
+        input[type="submit"] {
+            width: calc(100% - 22px); 
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #808080;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #888;
+        }
+
+      
+    </style>
+{% endblock meta %}
+{% block content %}
+<div class="container">
+    <h2>Create Album</h2>
+    <form method="post">
+        {% csrf_token %}
+        Judul Album: <br>
+        <input type="text" id="judul_album" name="judul_album"><br>
+        Label: <br>
+        <select name="label">
+            {% for label in labels %}
+            <option value="{{ label.id }}">{{ label.nama }}</option>
+            {% endfor %}
+        </select><br>
+
+        <h2>Lagu Pertama</h2>
+        <div class="form-group">
+            <label for="judul">Judul Lagu:</label>
+            <input type="text" id="judul_lagu" name="judul_lagu" required>
+        </div>
+        {% if request.session.is_artist %}
+        <div class="form-group">
+            <label for="artist">Artist:</label>
+            <input type="text" id="artist" name="artist" value="{{ request.session.nama }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="songwriter">Songwriter:</label>
+            <select id="songwriter" name="songwriter" multiple required>
+                {% for songwriter in songwriters %}
+                <option value="{{ songwriter.id }}">{{ songwriter.nama }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+        {% if request.session.is_songwriter  %}
+        <div class="form-group">
+            <label for="artist">Artist:</label>
+            <select id="artist" name="artist" required>
+                {% for artist in artists %}
+                <option value="{{ artist.nama }}">{{ artist.nama }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="songwriter">Songwriter:</label>
+            <input type="text" id="songwriter" name="songwriter" value="{{ request.session.nama }}" readonly>
+            <select id="songwriter" name="songwriter" multiple required>
+                {% for songwriter in songwriters %}
+                    {% if songwriter.nama != request.session.nama %}
+                        <option value="{{ songwriter.id }}">{{ songwriter.nama }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="genre">Genre:</label>
+            <select id="genre" name="genre" multiple required>
+                {% for g in genres %}
+                <option value="{{ g }}">{{ g }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="durasi">Durasi:</label>
+            <input type="text" id="durasi" name="durasi" required>
+        </div>
+        <input type="submit" value="Submit"> 
+    </form>
+</div>
+{% endblock content %}

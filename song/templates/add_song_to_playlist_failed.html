@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Tambah Lagu ke Playlist{% endblock title %}
+
+{% block content %}
+
+<div>
+    <h1 class="text-center mb-4">Add Song to User Playlist Failed!</h1> 
+
+    <div class="text-center mb-4">
+        <p class="fs-5 mb-0"><b>Lagu dengan judul '{{judul_lagu}}' sudah ditambahkan di '{{judul_playlist}}'!</b></p>
+    </div>
+
+    <div class="text-center">
+        <div class="justify-content-center mb-3">
+            <a href="../../../../../playlist/detail/{{id_user_playlist}}/">
+                <!-- pergi ke playlist 1 -->
+                <button type="button" class="btn btn-secondary btn-block mx-1">Ke Playlist</button>
+            </a>
+            <a href="../../">
+                <button type="button" class="btn btn-secondary btn-block mx-1">Kembali</button>
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
